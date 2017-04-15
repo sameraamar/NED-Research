@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/t-saaama/Documents/GitHub/NED-Research/lib/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/t-saaama/Documents/GitHub/NED-Research/lib/jedis-2.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/t-saaama/Documents/GitHub/NED-Research/lib/commons-pool2-2.4.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/t-saaama/Documents/GitHub/NED-Research/lib/spring-core-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="C:/Users/t-saaama/Documents/GitHub/NED-Research/lib/spring-data-redis-1.8.1.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ned"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
