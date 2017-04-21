@@ -17,7 +17,7 @@ public class FlattenDatasetMonitor extends ExecutorMonitorThread {
 		String id = "86383670600019968";
 		msg.append("\tid2group[").append(id).append("]: ");
 		
-		Entry entry = FlattenDatasetMain.id2group.get( id );
+		Entry entry = FlattenDatasetMain_Step1.id2group.get( id );
 		if(entry == null)
 			msg.append("null");
 		else

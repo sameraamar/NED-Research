@@ -1,8 +1,20 @@
 from pprint import pprint
 import pandas
-import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
+import matplotlib.pyplot as plt
+import pylab
 import matplotlib.mlab as mlab
+
+#import warnings
+#warnings.filterwarnings("ignore")
+
+try:
+    from pandasql import sqldf #, load_meat, load_births
+except:
+    print("try to install using:\npip install pandasql")
+    exit()
+
 try:
     import powerlaw
 except:
@@ -142,17 +154,17 @@ def hist1(feature, ax, title, xlabel, ylabel, bins=100, normed=0, log=False, col
 
 #sample histogram: http://matplotlib.org/examples/statistics/histogram_demo_multihist.html
 
-def retweets(events, no_events):
+def retweets(events_yes, events_no):
 
-    feature_no_events = no_events['retweets']
-    feature_events = events['retweets']
+    feature_events_no = events_no['retweets']
+    feature_events = events_yes['retweets']
 
-    feature_hist(feature_events, feature_no_events, 'retweets')
+    feature_hist(feature_events, feature_events_no, 'retweets')
 
-    analyze(feature_no_events, feature_name='retweets-no events')
-    analyze(feature_events, feature_name='retweets-events')
+    #analyze(feature_events_no, feature_name='retweets-no events_yes')
+    #analyze(feature_events, feature_name='retweets-events_yes')
 
-def analyze(data, feature_name):
+def analyze(data, feature_name, ax1, ax2):
     print("Analyzing feature:", feature_name)
     results = powerlaw.Fit(data)
     print ("alpha=", results.power_law.alpha)
@@ -161,35 +173,109 @@ def analyze(data, feature_name):
     R, p = results.distribution_compare('power_law', 'lognormal')
 
     print("R=", R, "p=", p)
-    #fig2 = plt.figure()
-    #ax = fig2.add_axes()
-    #results.plot_cdf(ax=ax) #color = 'b', linewidth = 2)
-    #plt.show()
 
-def likes(events, no_events):
-    feature_no_events = no_events['likes']
-    feature_events = events['likes']
+    ax1.set_title(feature_name)
+    ax1.set_xlabel("count")
+    #ax.set_ylabel("CCDF")
 
-    feature_hist(feature_events, feature_no_events, 'likes')
+    results.plot_ccdf(ax=ax1, label="ccdf")
 
-    analyze(feature_no_events, feature_name='likes-no events')
-    analyze(feature_events, feature_name='retwelikesets-events')
+    #ax2.set_title(feature_name)
+    #ax2.set_xlabel("count")
+    #ax2.set_ylabel("CDF")
 
-def calcGroups(events, no_events):
-    group_no_event = no_events.groupby('group')
-    group_event    = events.groupby('group')
+    results.plot_cdf(ax=ax2, label="cdf")
 
-    agg_no_events = group_no_event.agg(['count'])
-    agg_events    = group_event.agg(['count'])
+    #ax3.set_title(feature_name)
+    #ax3.set_xlabel("count")
+    #ax3.set_ylabel("PDF")
+
+    results.plot_pdf(ax=ax1, label="pdf")
+
+
+
+def likes(events_yes, events_no):
+    feature_events_no = events_no['likes']
+    feature_events = events_yes['likes']
+
+    feature_hist(feature_events, feature_events_no, 'likes')
+
+    #analyze(feature_events_no, feature_name='likes-no events_yes')
+    #analyze(feature_events, feature_name='retwelikesets-events_yes')
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% group level features %%%%%%%%%%%%%%%%%%%%%%%%
+
+def groupSizeFeature(events_yes, events_no):
+    groups_no = events_no.groupby('root')
+    groups_yes = events_yes.groupby('root')
+
+    agg_events_no = groups_no.agg(['count'])
+    agg_events = groups_yes.agg(['count'])
 
     feature_events = agg_events['id']['count']
-    feature_no_events = agg_no_events['id']['count']
-    feature_hist(feature_events, feature_no_events, 'groups')
+    feature_events_no = agg_events_no['id']['count']
+    feature_hist(feature_events, feature_events_no, 'groups')
 
-    analyze(feature_no_events, feature_name='group-no events')
-    analyze(feature_events, feature_name='group-events')
+def findBigComponents(tweets, title):
+    print('find a top 5 big component:')
+    components = sqldf("SELECT root, COUNT(*) AS count FROM tweets GROUP BY root;", locals())
+    components = sqldf("SELECT root, count FROM components ORDER BY count DESC;", locals())
 
-    print("done 'calcGroups'")
+    # components['ranked'] = components['count'].rank(ascending=-1)
+    print("count per topic:", components.head())
+    plotGraphSet(tweets, components, title + ': biggest 4 component')
+
+
+def findDeepComponents(tweets, title):
+    print(title, 'find a top 5 deepest component:')
+    components = sqldf("SELECT root, depth FROM tweets WHERE depth in (SELECT MAX(depth) FROM tweets);", locals())
+
+    # components['ranked'] = components['count'].rank(ascending=-1)
+    print("count per topic:", components.head())
+    plotGraphSet(tweets, components, title + ": deepest 4 component")
+
+def plotGraphSet(tweets, components, title):
+    if len(components) > 0:
+        fig, axes = plt.subplots(nrows=2, ncols=2)
+        ax0, ax1, ax2, ax3 = axes.flatten()
+        fig.suptitle(title)
+
+    i = 0
+    while i<4 and i<len(components):
+        plotGraph(tweets, components['root'][i], ax=axes[(int)(i/2), i%2]) # "'94807275264413697") #""'93983936493010944")
+        i+=1
+
+    if len(components) == 0:
+        print(title, 'no data to plot as graph')
+    else:
+        fig.show()
+
+def groupFeatures(events_yes, events_no):
+    findDeepComponents(events_no, "w/o events")
+    findDeepComponents(events_yes, "with events")
+
+    findBigComponents(events_no, "w/o events")
+    findBigComponents(events_yes, "with events")
+
+    #print('group by root field')
+    #groups_no = events_no.groupby('root')
+    #groups_yes = events_yes.groupby('root')
+
+    #print('look for max and counts')
+    #df_grouped = events_no.groupby('root').agg('count')
+    #df_grouped = df_grouped.reset_index()
+    #df_grouped = df_grouped.rename(columns={'count': 'count_max'})
+    #df = pandas.merge(events_no, df_grouped, how='left', on=['root'])
+
+    #print(df.tail())
+    #df = df[df['count'] == df['count_max']]
+
+    #print("Groups: ", df , sep='\t')
+    groupSizeFeature(events_yes, events_no)
+
+
+
+    print("done 'groupFeatures'")
 
     #fig, ax = plt.subplots(figsize=(8, 6))
     #for label, df in groups:
@@ -198,42 +284,107 @@ def calcGroups(events, no_events):
 
 
 
+def plotGraph(dataset, root, ax):
+    q = 'SELECT id, parent, parentType FROM dataset WHERE root == "%s"' % root
+    component = sqldf(q, locals())
+    #component = dataset[dataset['root'] == root]
+    print("Found : " , len(component), " related items")
+
+    G = nx.DiGraph()
+    component.to_csv('c:/temp/%s.csv' % root, sep=',')
+    print(component)
+    G.add_edges_from(component[['id', 'parent']].values, weight=1)
+    #G.add_edges_from([('D', 'A'), ('D', 'E'), ('B', 'D'), ('D', 'E')], weight=2)
+    #G.add_edges_from([('B', 'C'), ('E', 'F')], weight=3)
+    #G.add_edges_from([('C', 'F')], weight=4)
+
+    val_map = {'id': 1.0,
+               'parent': 0.5}
+
+    values = [val_map.get(node, 0.45) for node in G.nodes()]
+
+    #edge_labels = dict([((u, v,), d['weight'])
+    #                    for u, v, d in G.edges(data=True)])
+    #red_edges = [('C', 'D'), ('D', 'A')]
+    #edge_colors = ['black' if not edge in red_edges else 'red' for edge in G.edges()]
+
+    pos = nx.spring_layout(G)
+    #nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    #print(ax)
+    nx.draw(G, pos=pos, ax=ax, node_color=values, edge_cmap=plt.cm.Reds)
+    #nx.draw(G, pos, node_color=values, node_size=1500, edge_color=edge_colors, edge_cmap=plt.cm.Reds)
+    #pylab.hold(True)
+    #pylab.show()
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (end) group level features %%%%%%%%%%%%%%%%%%%%%%%%
 
 
-def feature_hist(feature_events, feature_no_events, feature_name):
+def feature_hist(feature_events, feature_events_no, feature_name):
 
-    fig, axes = plt.subplots(nrows=3, ncols=2)
-    ax0, ax1, ax2, ax3, ax4, ax5 = axes.flatten()
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+    ax0, ax1, ax2, ax3 = axes.flatten()
 
     bins = 50
 
-    hist (feature_no_events, ax0, feature_name+' - no events (hist)', feature_name, 'count', bins=bins, color="red")
-    hist1(feature_no_events, ax2, feature_name+' - no events (hist1)', feature_name, 'count', bins=bins, color="red")
+    hist (feature_events_no, ax0, feature_name+' - no events (hist)', feature_name, 'count', bins=bins, color="red")
+    hist1(feature_events_no, ax2, feature_name+' - no events - hist1', feature_name, 'count', bins=bins, color="red")
 
-    #hist(feature_no_events, ax2, feature_name+' - no events', feature_name, 'count2', bins=bins, color="red")
-    #hist(feature_no_events, ax4, feature_name+' (log) - no events', feature_name, 'log(count)', log=True, bins=bins, color="red")
+    #hist(feature_events_no, ax2, feature_name+' - no events', feature_name, 'count2', bins=bins, color="red")
+    #hist(feature_events_no, ax4, feature_name+' (log) - no events', feature_name, 'log(count)', log=True, bins=bins, color="red")
 
     hist (feature_events, ax1, feature_name+' - events (hist)', feature_name, 'count', bins=bins, color="blue")
-    hist1(feature_events, ax3, feature_name+' - events (hist1)', feature_name, 'count', bins=bins, color="blue")
+    hist1(feature_events, ax3, feature_name+' - events- hist1', feature_name, 'count', bins=bins, color="blue")
     #hist(feature_events, ax3, feature_name+' - events', feature_name, 'count2', bins=bins, color="blue")
     #hist(feature_events, ax3, feature_name+' (normalized) - events', normed=1, bins=bins, color="blue")
     #hist(feature_events, ax5, feature_name+' (log) - events', feature_name, 'log(count)', bins=bins, log=True, color="blue")
 
-    # weights = np.ones_like(feature_no_events) / len(feature_no_events)
-    # ax2.hist(feature_no_events, bins=bins, weights=weights, histtype='bar', color="red")
+    # weights = np.ones_like(feature_events_no) / len(feature_events_no)
+    # ax2.hist(feature_events_no, bins=bins, weights=weights, histtype='bar', color="red")
 
 
     fig.tight_layout()
     plt.show()
 
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+
+    ax0, ax1, ax2, ax3 = axes.flatten()
+    #fig, axes = plt.subplots(nrows=3, ncols=2)
+    #ax4, ax5, ax6, ax7, ax8, ax9 = axes.flatten()
+
+    analyze(feature_events_no, feature_name + ' events-NO', ax0, ax2)
+    analyze(feature_events, feature_name + ' events-YES', ax1, ax3)
+
+    ax0.legend()
+    ax1.legend()
+
+    #handles , labels = ax1.get_legend_handles_labels()
+    #ax1.legend( handles , labels )
+
+    #counts, bins = np.histogram(feature_events_no, bins=100)
+    #cdf = np.cumsum(counts)
+    ##pdf = np.cum.cumsum(counts)
+    ##ccdf = np.cumsum(counts)
+    ## fig = plt.figure()
+    #ax2.plot(bins[1:], cdf)
+
+    fig.tight_layout()
+    plt.show()
+
+
     print("Plotted features for", feature_name)
 
 
-def analyzeDataset(filename):
+def analyzeDataset(filename, sep=','):
     np.seterr(divide='ignore', invalid='ignore')
 
-    dataset = pandas.read_csv(filename)
-    dataset['jRtwt'] = dataset['jRtwt'].astype(str)
+    print('loading ', filename)
+    dataset = pandas.read_csv(filename, sep=sep)
+    #ll = locals()
+    #pysqldf = lambda q: sqldf(q, ll)
+    #print (pysqldf("SELECT * FROM dataset LIMIT 10;").head() )
+
+
+    #dataset['jRtwt'] = dataset['jRtwt'].astype(str)
 
     #dataset[dataset['retweets'] == 0] = 0.001
 
@@ -242,35 +393,31 @@ def analyzeDataset(filename):
 
     #analyze(dataset['likes'], 'likes')
     #exit()
+    print('identify topics...')
+    #events_no = dataset[dataset['topic_id'] == -1]
+    events_no = sqldf("SELECT * FROM dataset WHERE topic_id == -1;", locals())
 
-    no_events = dataset[dataset['topic_id'] == -1]
-    events = dataset[dataset['topic_id'] > -1]
+    #events_yes = dataset[dataset['topic_id'] > -1]
+    events_yes = sqldf("SELECT * FROM dataset WHERE topic_id  > -1;", locals())
 
     print("summary: ")
 
-    groups = dataset.groupby(by='topic_id')
-    agg = groups.agg(['count', 'max'])
-    print(agg['level'], sep='\t')
+    #groups = dataset.groupby(by='topic_id')
+    #agg = groups.agg(['count', 'max'])
+    #print(agg['depth'], sep='\t')
 
-    print("found", len(events), "tweets with", len(groups.groups)-1, "events")
-    print("found", len(no_events), "tweets without any specific events")
+    groups2 = sqldf("SELECT topic_id, COUNT(*) AS count, MAX(depth) AS maxDepth FROM dataset GROUP BY topic_id;", locals())
+    print("count per topic:", groups2)
 
-    retweets(events, no_events)
-    likes(events, no_events)
-    calcGroups(events, no_events)
+    print("found", len(events_yes), "tweets with", len(groups2)-1, "events")
+    print("found", len(events_no), "tweets without any specific events")
 
+    groupFeatures(events_yes, events_no)
 
-    #likes0 = likes0[likes0 > 10]
-    #likes1 = likes1[likes1 > 10]
-
-    #hist0 = np.histogram(likes0)
-    #hist1 = np.histogram(likes1)
-
-
-    ##print (group)
-    #plt.title("Gaussian Histogram")
-    #plt.xlabel("Value")
-    #plt.ylabel("Frequency")
+    retweets(events_yes, events_no)
+    likes(events_yes, events_no)
 
 if __name__ == "__main__":
-    analyzeDataset('c:/temp/dataset-winehouse.txt')
+    #analyzeDataset('c:/temp/data-small.txt', sep='\t')
+    #analyzeDataset('c:/temp/dataset1.2.txt')
+    analyzeDataset('c:/temp/dataset1.3.txt')

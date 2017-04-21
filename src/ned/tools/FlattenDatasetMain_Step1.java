@@ -14,15 +14,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import ned.main.ExecutorMonitorThread;
 import ned.types.Document;
 import ned.types.GlobalData;
-import ned.types.HashtableRedis;
 import ned.types.Session;
 import ned.types.Utility;
 
-public class FlattenDatasetMain {
+public class FlattenDatasetMain_Step1 {
 	private static FlattenToCSVExecutor mapper;
 	public static int processed;
 	private static Hashtable<String, Integer> positive;
@@ -36,25 +34,24 @@ public class FlattenDatasetMain {
 			
 			long base = System.nanoTime();
 			
-			String csvfilename = "c:/temp/dataset1.txt";
+			String csvfilename = "c:/temp/dataset1.3.txt";
 			PrintStream dataout = new PrintStream(new FileOutputStream(csvfilename));
 
 			String filename = "C:\\data\\events_db\\petrovic\\relevance_judgments_00000000";
-			flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000.csv");
-			
-			mapper = new FlattenToCSVExecutor(dataout, GlobalData.getInstance().getParams().number_of_threads);
+			flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000.1.3.csv");
+
+
 			id2group = new Hashtable<String, Entry>(); // HashtableRedis<Entry>("mapper.id2group", Entry.class);
-			
+			doMain(0);
+			dumpGroups("c:/temp/id2group.1.3.txt");
+
+			mapper = new FlattenToCSVExecutor(dataout, GlobalData.getInstance().getParams().number_of_threads);
 			ExecutorMonitorThread monitor = new FlattenDatasetMonitor(mapper.getExecutor(), 2);
 			monitor.start();
-			
-			doMain(0);
-			dumpGroups("c:/temp/id2group.txt");
-			
 			doMain(1);
-			
 			mapper.shutdown();
-			monitor.shutdown();
+			
+			//monitor.shutdown();
 			
 			System.out.println("Finished in " + (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-base)/1000.0) + " seconds.");
 			
@@ -186,7 +183,10 @@ public class FlattenDatasetMain {
 				
 				ids.add(doc.getId());
 				if(scan == 1)
+				{
+					//GlobalData.getInstance().setDocumentFromRedis("id2doc_parser", doc.getId(), doc);
 					mapper.submit(line);
+				}
 				
 				else if (scan == 0)
 				{
@@ -195,7 +195,7 @@ public class FlattenDatasetMain {
 					
 					if(rply == null && rtwt == null)
 					{
-						Entry e = new Entry(doc.getId(), 0);
+						Entry e = new Entry(doc.getId(), doc.getTimestamp(), 0);
 						id2group.put(doc.getId(), e);
 					}
 					else if(rply != null || rtwt != null)
@@ -205,11 +205,11 @@ public class FlattenDatasetMain {
 						Entry leadE = id2group.get(myLeadId);
 						if (leadE == null)
 						{
-							leadE = new Entry(myLeadId, 0);
+							leadE = new Entry(myLeadId, doc.getTimestamp(), 0);
 							id2group.put(myLeadId, leadE);
 						}
 
-						Entry e = new Entry(leadE.leadId, leadE.level+1);
+						Entry e = new Entry(leadE.leadId, leadE.firstTimestamp, leadE.level+1);
 						id2group.put(doc.getId(), e);
 					}
 					

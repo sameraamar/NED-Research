@@ -35,8 +35,16 @@ abstract public class ProcessorExecutor {
 
 	public void shutdown() {
 		executor.shutdown();
+		
+		await();
+		
 	    while (!executor.isTerminated()) 
 	    {
+	    	try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 	    }
 	    System.out.println("Finished all threads");
 	}
