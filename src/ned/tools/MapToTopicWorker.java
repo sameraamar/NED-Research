@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import ned.types.Document;
 import ned.types.GlobalData;
-import ned.types.Session;
 
 public class MapToTopicWorker implements Runnable 
 {

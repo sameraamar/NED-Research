@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import ned.main.ExecutorMonitorThread;
 import ned.types.Document;
 import ned.types.GlobalData;
@@ -21,6 +22,7 @@ import ned.types.Session;
 import ned.types.Utility;
 
 public class FlattenDatasetMain_Step1 {
+	private static final String VERSION = "V1";
 	private static FlattenToCSVExecutor mapper;
 	public static int processed;
 	private static Hashtable<String, Integer> positive;
@@ -33,17 +35,17 @@ public class FlattenDatasetMain_Step1 {
 		try {
 			
 			long base = System.nanoTime();
-			
-			String csvfilename = "c:/temp/dataset1.3.txt";
+			String suffex = "50k";
+			String csvfilename = "c:/temp/dataset_"+suffex+"_" + VERSION + ".txt";
 			PrintStream dataout = new PrintStream(new FileOutputStream(csvfilename));
 
 			String filename = "C:\\data\\events_db\\petrovic\\relevance_judgments_00000000";
-			flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000.1.3.csv");
+			flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000_"+suffex+"_" + VERSION + ".csv");
 
 
 			id2group = new Hashtable<String, Entry>(); // HashtableRedis<Entry>("mapper.id2group", Entry.class);
 			doMain(0);
-			dumpGroups("c:/temp/id2group.1.3.txt");
+			dumpGroups("c:/temp/id2group_"+suffex+"_" + VERSION + ".txt");
 
 			mapper = new FlattenToCSVExecutor(dataout, GlobalData.getInstance().getParams().number_of_threads);
 			ExecutorMonitorThread monitor = new FlattenDatasetMonitor(mapper.getExecutor(), 2);

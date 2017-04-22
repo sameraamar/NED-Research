@@ -12,7 +12,7 @@ public class FlattenDatasetMonitor extends ExecutorMonitorThread {
 	
 	@Override
 	protected void printHook() {
-		StringBuffer msg = new StringBuffer();
+		/*StringBuffer msg = new StringBuffer();
 		
 		String id = "86383670600019968";
 		msg.append("\tid2group[").append(id).append("]: ");
@@ -27,6 +27,7 @@ public class FlattenDatasetMonitor extends ExecutorMonitorThread {
 		}
 		
 		System.out.println(msg.toString());
+		*/
 	}
 	
 }

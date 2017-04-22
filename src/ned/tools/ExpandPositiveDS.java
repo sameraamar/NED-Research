@@ -26,11 +26,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import ned.hash.LSHForest;
 import ned.types.Document;
-import ned.types.DocumentClusteringThread;
 import ned.types.GlobalData;
-import ned.types.Session;
 import ned.types.Utility;
 
 public class ExpandPositiveDS {
@@ -158,7 +155,7 @@ public class ExpandPositiveDS {
 		long middletime = base;
 		
 		
-    	Session.getInstance().message(Session.ERROR, "Reader", "Loading data...");
+    	System.out.println("Reader: Loading data...");
 
     	int offset = gd.getParams().offset;
 		for (String filename : files) {
@@ -205,7 +202,7 @@ public class ExpandPositiveDS {
 	            	msg.append(" elapsed time: ").append(Utility.humanTime(seconds));
 	            	msg.append("(AHT: ").append(average2).append(" ms). ");
 	            	
-	            	Session.getInstance().message(Session.INFO, "Reader", msg.toString());
+	            	System.out.println("Reader: " + msg.toString());
 	            	
             		middletime = System.nanoTime();
             		middle_processed = 0;
@@ -223,7 +220,7 @@ public class ExpandPositiveDS {
 		long current = System.nanoTime();
 
 		long seconds = TimeUnit.NANOSECONDS.toSeconds(current-base);
-		Session.getInstance().message(Session.INFO, "Summary", "Done in " + Utility.humanTime(seconds) );
+		System.out.println("Summary" + "Done in " + Utility.humanTime(seconds) );
 	}
 	
 	public static void loadLabeledTweets(String filename) throws IOException

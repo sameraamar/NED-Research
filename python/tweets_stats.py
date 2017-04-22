@@ -4,10 +4,11 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import pylab
+import math
 import matplotlib.mlab as mlab
 
-#import warnings
-#warnings.filterwarnings("ignore")
+import warnings
+warnings.filterwarnings("ignore")
 
 try:
     from pandasql import sqldf #, load_meat, load_births
@@ -21,8 +22,11 @@ except:
     print("try to install using:\npip install powerlaw")
     exit()
 
-import math, numpy as np
 
+VERSION = 'V1'
+SUFFEX = "15m"
+img_idx = 0
+SHOW_ONLY=False
 
 # find the first bin for the given binsize
 def bin_find_k(binsize):
@@ -190,7 +194,7 @@ def analyze(data, feature_name, ax1, ax2):
     #ax3.set_xlabel("count")
     #ax3.set_ylabel("PDF")
 
-    results.plot_pdf(ax=ax1, label="pdf")
+    #results.plot_pdf(ax=ax1, label="pdf")
 
 
 
@@ -204,6 +208,19 @@ def likes(events_yes, events_no):
     #analyze(feature_events, feature_name='retwelikesets-events_yes')
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% group level features %%%%%%%%%%%%%%%%%%%%%%%%
+def groupExtractFeatures(group_feature_set, feature_names):
+    print("query event groups...")
+    q = 'SELECT * FROM group_feature_set WHERE is_event == 1'
+    feature_events = sqldf(q, locals())
+
+    print("query none event groups...")
+    q = 'SELECT * FROM group_feature_set WHERE is_event == 0'
+    feature_events_no = sqldf(q, locals())
+    print("# groups: ", len(feature_events) , len(feature_events_no))
+
+    for feature_name in feature_names:
+        print("handle feature:", feature_name)
+        feature_hist(feature_events[feature_name], feature_events_no[feature_name], feature_name)
 
 def groupSizeFeature(events_yes, events_no):
     groups_no = events_no.groupby('root')
@@ -214,7 +231,8 @@ def groupSizeFeature(events_yes, events_no):
 
     feature_events = agg_events['id']['count']
     feature_events_no = agg_events_no['id']['count']
-    feature_hist(feature_events, feature_events_no, 'groups')
+    feature_hist(feature_events, feature_events_no, 'groups1')
+
 
 def findBigComponents(tweets, title):
     print('find a top 5 big component:')
@@ -235,27 +253,52 @@ def findDeepComponents(tweets, title):
     plotGraphSet(tweets, components, title + ": deepest 4 component")
 
 def plotGraphSet(tweets, components, title):
-    if len(components) > 0:
-        fig, axes = plt.subplots(nrows=2, ncols=2)
-        ax0, ax1, ax2, ax3 = axes.flatten()
-        fig.suptitle(title)
+    if len(components) == 0:
+        print(title, 'no data to plot as graph')
+        return
+
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+    ax0, ax1, ax2, ax3 = axes.flatten()
+    fig.suptitle(title)
 
     i = 0
     while i<4 and i<len(components):
         plotGraph(tweets, components['root'][i], ax=axes[(int)(i/2), i%2]) # "'94807275264413697") #""'93983936493010944")
         i+=1
 
-    if len(components) == 0:
-        print(title, 'no data to plot as graph')
-    else:
+    if SHOW_ONLY:
         fig.show()
+    else:
+        global img_idx
+        fig.savefig('c:/temp/img_' + SUFFEX + "_" + VERSION + "_"  + str(img_idx)+ ".png")
+        img_idx += 1
 
-def groupFeatures(events_yes, events_no):
-    findDeepComponents(events_no, "w/o events")
-    findDeepComponents(events_yes, "with events")
 
-    findBigComponents(events_no, "w/o events")
-    findBigComponents(events_yes, "with events")
+def groupFeatures(dataset, events_yes, events_no):
+    print("query feature set...")
+    components = sqldf("SELECT root, "
+                       "COUNT(*) size, "
+                       "COUNT(DISTINCT userId) AS users_count, "
+                       "SUM(retweets)/COUNT(*) as retweet_per_tweet, "
+                       "MIN(retweets) as retweet_min, "
+                       "MAX(retweets) as retweet_max, "
+                       "AVG(likes) as likes_avg, "
+                       "MAX(likes) as likes_max, "
+                       'MAX(depth) as depth_max, '
+                       'MAX(topic_id) AS topic_id, '
+                       'MAX(topic_id)>-1 AS is_event, '
+                       'SUM(CASE WHEN parentType=2 THEN 1 ELSE 0 END) AS internal_rtwts, '
+                       'SUM(CASE WHEN parentType=1 THEN 1 ELSE 0 END) AS internal_rplys '
+                       "FROM dataset "
+                       "GROUP BY root;", locals())
+    print("writing features to csv file...")
+    components.to_csv("c:/temp/features_"+ SUFFEX + "_" + VERSION +".csv", sep="\t")
+
+    #Samer: findDeepComponents(events_no, "w/o events")
+    #Samer: findBigComponents(events_no, "w/o events")
+
+    #Samer: findDeepComponents(events_yes, "with events")
+    #Samer: findBigComponents(events_yes, "with events")
 
     #print('group by root field')
     #groups_no = events_no.groupby('root')
@@ -271,9 +314,8 @@ def groupFeatures(events_yes, events_no):
     #df = df[df['count'] == df['count_max']]
 
     #print("Groups: ", df , sep='\t')
-    groupSizeFeature(events_yes, events_no)
-
-
+    #groupSizeFeature(events_yes, events_no)
+    groupExtractFeatures(components, ['size', 'likes_avg', 'depth_max', 'users_count'])
 
     print("done 'groupFeatures'")
 
@@ -285,15 +327,15 @@ def groupFeatures(events_yes, events_no):
 
 
 def plotGraph(dataset, root, ax):
-    q = 'SELECT id, parent, parentType FROM dataset WHERE root == "%s"' % root
+    q = 'SELECT userId, parentUserId, parentType FROM dataset WHERE root == "%s"' % root
     component = sqldf(q, locals())
     #component = dataset[dataset['root'] == root]
-    print("Found : " , len(component), " related items")
+    #print("Found : " , len(component), " related items")
 
     G = nx.DiGraph()
-    component.to_csv('c:/temp/%s.csv' % root, sep=',')
-    print(component)
-    G.add_edges_from(component[['id', 'parent']].values, weight=1)
+    #component.to_csv('c:/temp/%s.csv' % root, sep=',')
+    #print(component)
+    G.add_edges_from(component[['userId', 'parentUserId']].values, weight=1)
     #G.add_edges_from([('D', 'A'), ('D', 'E'), ('B', 'D'), ('D', 'E')], weight=2)
     #G.add_edges_from([('B', 'C'), ('E', 'F')], weight=3)
     #G.add_edges_from([('C', 'F')], weight=4)
@@ -320,20 +362,19 @@ def plotGraph(dataset, root, ax):
 
 
 def feature_hist(feature_events, feature_events_no, feature_name):
-
-    fig, axes = plt.subplots(nrows=2, ncols=2)
-    ax0, ax1, ax2, ax3 = axes.flatten()
+    fig, axes = plt.subplots(nrows=2, ncols=1)
+    ax0, ax1 = axes.flatten()
 
     bins = 50
 
     hist (feature_events_no, ax0, feature_name+' - no events (hist)', feature_name, 'count', bins=bins, color="red")
-    hist1(feature_events_no, ax2, feature_name+' - no events - hist1', feature_name, 'count', bins=bins, color="red")
+    #hist1(feature_events_no, ax2, feature_name+' - no events - hist1', feature_name, 'count', bins=bins, color="red")
 
     #hist(feature_events_no, ax2, feature_name+' - no events', feature_name, 'count2', bins=bins, color="red")
     #hist(feature_events_no, ax4, feature_name+' (log) - no events', feature_name, 'log(count)', log=True, bins=bins, color="red")
 
     hist (feature_events, ax1, feature_name+' - events (hist)', feature_name, 'count', bins=bins, color="blue")
-    hist1(feature_events, ax3, feature_name+' - events- hist1', feature_name, 'count', bins=bins, color="blue")
+    #hist1(feature_events, ax3, feature_name+' - events- hist1', feature_name, 'count', bins=bins, color="blue")
     #hist(feature_events, ax3, feature_name+' - events', feature_name, 'count2', bins=bins, color="blue")
     #hist(feature_events, ax3, feature_name+' (normalized) - events', normed=1, bins=bins, color="blue")
     #hist(feature_events, ax5, feature_name+' (log) - events', feature_name, 'log(count)', bins=bins, log=True, color="blue")
@@ -341,9 +382,13 @@ def feature_hist(feature_events, feature_events_no, feature_name):
     # weights = np.ones_like(feature_events_no) / len(feature_events_no)
     # ax2.hist(feature_events_no, bins=bins, weights=weights, histtype='bar', color="red")
 
-
     fig.tight_layout()
-    plt.show()
+    if SHOW_ONLY:
+        plt.show()
+    else:
+        global img_idx
+        plt.savefig('c:/temp/img_' + SUFFEX + "_" + VERSION + "_" + str(img_idx) + ".png")
+        img_idx += 1
 
     fig, axes = plt.subplots(nrows=2, ncols=2)
 
@@ -356,6 +401,8 @@ def feature_hist(feature_events, feature_events_no, feature_name):
 
     ax0.legend()
     ax1.legend()
+    ax2.legend()
+    ax3.legend()
 
     #handles , labels = ax1.get_legend_handles_labels()
     #ax1.legend( handles , labels )
@@ -368,7 +415,12 @@ def feature_hist(feature_events, feature_events_no, feature_name):
     #ax2.plot(bins[1:], cdf)
 
     fig.tight_layout()
-    plt.show()
+
+    if SHOW_ONLY:
+        plt.show()
+    else:
+        plt.savefig('c:/temp/img_' + SUFFEX + "_" + VERSION + "_" + str(img_idx) + ".png")
+        img_idx += 1
 
 
     print("Plotted features for", feature_name)
@@ -412,12 +464,13 @@ def analyzeDataset(filename, sep=','):
     print("found", len(events_yes), "tweets with", len(groups2)-1, "events")
     print("found", len(events_no), "tweets without any specific events")
 
-    groupFeatures(events_yes, events_no)
+    groupFeatures(dataset, events_yes, events_no)
 
     retweets(events_yes, events_no)
     likes(events_yes, events_no)
 
 if __name__ == "__main__":
-    #analyzeDataset('c:/temp/data-small.txt', sep='\t')
+
+    analyzeDataset('c:/temp/dataset_' + SUFFEX + "_" + VERSION + '.txt', sep=',')
     #analyzeDataset('c:/temp/dataset1.2.txt')
-    analyzeDataset('c:/temp/dataset1.3.txt')
+    #analyzeDataset('c:/temp/dataset1.4.txt')

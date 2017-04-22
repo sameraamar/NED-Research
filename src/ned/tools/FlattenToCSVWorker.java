@@ -48,18 +48,22 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		
 		String parent = "";
 		String parentType = "";
+		String parentUser = "";
 		if(jRply!=null && !jRply.isEmpty())
 		{
 			parent = "i" + jRply; 
+			parentUser = doc.getReplyToUserId();
 			parentType = "1";
 		}
 		if(jRtwt != null && !jRtwt.isEmpty())
 		{
 			parent = "i" + jRtwt ; 
+			parentUser = doc.getRetweetedUserId();
 			parentType = "2";
 		}
 		
 		sb.append(parent).append(",");
+		sb.append(parentUser).append(",");
 		sb.append(parentType).append(",");
 		
 		
