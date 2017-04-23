@@ -35,7 +35,7 @@ public class FlattenDatasetMain_Step1 {
 		try {
 			
 			long base = System.nanoTime();
-			String suffex = "50k";
+			String suffex = "temp";
 			String csvfilename = "c:/temp/dataset_"+suffex+"_" + VERSION + ".txt";
 			PrintStream dataout = new PrintStream(new FileOutputStream(csvfilename));
 
@@ -71,6 +71,8 @@ public class FlattenDatasetMain_Step1 {
 		
 		
 		String folder = "C:\\data\\events_db\\petrovic";
+		//folder = "C:\\temp";
+		//String[] files = {"my_tweets.txt.gz"};
 		String[] files = {"petrovic_00000000.gz",
 	                    "petrovic_00500000.gz",
 	                    "petrovic_01000000.gz",

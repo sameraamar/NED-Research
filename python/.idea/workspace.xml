@@ -18,11 +18,21 @@
       <file leaf-file-name="tweets_stats.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tweets_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="293" column="42" lean-forward="false" selection-start-line="293" selection-start-column="42" selection-end-line="293" selection-end-column="42" />
+            <state relative-caret-position="243">
+              <caret line="441" column="16" lean-forward="true" selection-start-line="441" selection-start-column="16" selection-end-line="441" selection-end-column="16" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="nx_pylab.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/networkx/drawing/nx_pylab.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="146">
+              <caret line="722" column="0" lean-forward="false" selection-start-line="722" selection-start-column="0" selection-end-line="722" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -41,7 +51,7 @@
         <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/pandas/io/sql.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="234">
-              <caret line="960" column="23" lean-forward="true" selection-start-line="960" selection-start-column="23" selection-end-line="960" selection-end-column="23" />
+              <caret line="960" column="23" lean-forward="false" selection-start-line="960" selection-start-column="23" selection-end-line="960" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -92,36 +102,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>labeled</find>
-      <find>events_yes</find>
-      <find>agg</find>
-      <find>meat</find>
-      <find>sqldf</find>
-      <find>summary</find>
-      <find>identi</find>
-      <find>identify</find>
-      <find>title</find>
-      <find>deep</find>
-      <find>big</find>
-      <find>save</find>
-      <find>COUNT</find>
-      <find>ount per topic:</find>
-      <find>legen</find>
-      <find>feature_hist</find>
-      <find>features</find>
-      <find>feature_name</find>
       <find>found:</find>
       <find>hist1</find>
       <find>.show</find>
       <find>savefi</find>
       <find>suff</find>
-      <find>savefig</find>
       <find>subpl</find>
       <find>subplots</find>
-      <find>savef</find>
       <find>groupSizeFeature</find>
       <find>order</find>
       <find>findBigComponents</find>
+      <find>855791404433518594</find>
+      <find>xbins</find>
+      <find>feature_hist</find>
+      <find>save</find>
+      <find>savef</find>
+      <find>savefig</find>
+      <find>write</find>
+      <find>to_csv</find>
+      <find>.his</find>
+      <find>featir</find>
+      <find>graph</find>
+      <find>deep</find>
+      <find>parent</find>
+      <find>parentt</find>
+      <find>parentType</find>
+      <find>CUT_FROM</find>
+      <find>c:/temp</find>
+      <find>FOLDER</find>
+      <find>ccdf</find>
+      <find>analyze</find>
     </findStrings>
     <replaceStrings>
       <replace>events_yes</replace>
@@ -440,7 +450,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.48298573" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48298573" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -462,7 +472,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tweets_stats.py</url>
-          <line>61</line>
+          <line>74</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -472,8 +482,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tweets_stats.py</url>
-          <line>317</line>
-          <option name="timeStamp" value="29" />
+          <line>140</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -483,7 +493,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="30" />
+      <option name="time" value="33" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -878,14 +888,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/networkx/drawing/nx_pylab.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="834">
-          <caret line="115" column="14" lean-forward="false" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/analyze_clusters.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
@@ -907,7 +909,7 @@
     <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/pandas/io/sql.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
-          <caret line="960" column="23" lean-forward="true" selection-start-line="960" selection-start-column="23" selection-end-line="960" selection-end-column="23" />
+          <caret line="960" column="23" lean-forward="false" selection-start-line="960" selection-start-column="23" selection-end-line="960" selection-end-column="23" />
           <folding />
         </state>
       </provider>
@@ -920,10 +922,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/networkx/drawing/nx_pylab.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="722" column="0" lean-forward="false" selection-start-line="722" selection-start-column="0" selection-end-line="722" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tweets_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="293" column="42" lean-forward="false" selection-start-line="293" selection-start-column="42" selection-end-line="293" selection-end-column="42" />
+        <state relative-caret-position="243">
+          <caret line="441" column="16" lean-forward="true" selection-start-line="441" selection-start-column="16" selection-end-line="441" selection-end-column="16" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
           </folding>

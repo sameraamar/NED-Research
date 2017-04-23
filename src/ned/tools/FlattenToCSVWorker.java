@@ -31,6 +31,9 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		String jRply = handleNull(doc.getReplyTo());
 		
 		String jRtwt = handleNull(doc.getRetweetedId());
+		
+		String jQuote = handleNull(doc.getQuotedStatusId());
+		
 		int retweets = doc.getRetweetCount();
 		String created_at = doc.getCreatedAt();
 		String id = doc.getId();
@@ -55,11 +58,19 @@ public class FlattenToCSVWorker extends ProcessorWorker
 			parentUser = doc.getReplyToUserId();
 			parentType = "1";
 		}
+
 		if(jRtwt != null && !jRtwt.isEmpty())
 		{
 			parent = "i" + jRtwt ; 
 			parentUser = doc.getRetweetedUserId();
 			parentType = "2";
+		}
+		
+		if(jQuote != null && !jQuote.isEmpty())
+		{
+			parent = "i" + jQuote ; 
+			parentUser = doc.getQuotedUserId();
+			parentType = "3";
 		}
 		
 		sb.append(parent).append(",");

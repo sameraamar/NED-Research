@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pylab
 import math
 import matplotlib.mlab as mlab
-
+import os
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -25,8 +25,21 @@ except:
 
 VERSION = 'V1'
 SUFFEX = "15m"
+CUT_FROM=None
 img_idx = 0
 SHOW_ONLY=False
+GENERATE_GRAPH=True
+FOLDER = 'c:/temp/15m_'
+
+def savefig(fig):
+    newname = FOLDER + '/img_' + str(CUT_FROM) + '_' + SUFFEX + "_" + VERSION + "_" + str(img_idx) + ".png"
+    if os.path.exists(newname):
+        os.remove(newname)
+        print('removed: ' + newname)
+
+    print('save to file: ' + newname)
+    fig.savefig(newname)
+    print('done.')
 
 # find the first bin for the given binsize
 def bin_find_k(binsize):
@@ -114,7 +127,7 @@ def np_hist(actions, title, ax, color, log=False, bins=100, normalize=False):
     ax.set_title('bars with legend')
 
 
-def hist(feature, ax, title, xlabel, ylabel, bins=100, normed=0, log=False, color="blue", ignoreZeros=True):
+def hist(feature, ax, title, xlabel, ylabel, bins=100, normed=0, log=False, color="blue", cut_from=None):
     #np_hist(feature, title, ax, color, log=log, bins=bins, normalize=(normed == 1))
 
     #feature = feature[feature > 0]
@@ -127,6 +140,22 @@ def hist(feature, ax, title, xlabel, ylabel, bins=100, normed=0, log=False, colo
     else:
         hist, xbins = np.histogram(feature, bins=bins)
         #xbins = np.linspace(0, )
+        if(cut_from is not None and cut_from>0):
+            cut_from = 0
+            sum_all = len(feature)
+            too_high = (hist[cut_from] / sum_all) > 0.95
+            while(too_high):
+                sum_all -= hist[cut_from]
+                cut_from+=1
+                too_high = (hist[cut_from] / sum_all) > 0.95
+
+            hist, xbins = hist[cut_from:], xbins[cut_from:]
+        elif(cut_from is not None and cut_from<0):
+            ordinal_bin_k = -1*cut_from
+            newhist = []
+            newxbin = []
+
+        print("maximum: ", max(hist))
 
         tmp1 = [np.sum(xbins[0:9])]
         center = (xbins[:-1] + xbins[1:]) / 2
@@ -163,7 +192,7 @@ def retweets(events_yes, events_no):
     feature_events_no = events_no['retweets']
     feature_events = events_yes['retweets']
 
-    feature_hist(feature_events, feature_events_no, 'retweets')
+    feature_hist(feature_events, feature_events_no, 'retweets', cut_from=CUT_FROM)
 
     #analyze(feature_events_no, feature_name='retweets-no events_yes')
     #analyze(feature_events, feature_name='retweets-events_yes')
@@ -202,7 +231,7 @@ def likes(events_yes, events_no):
     feature_events_no = events_no['likes']
     feature_events = events_yes['likes']
 
-    feature_hist(feature_events, feature_events_no, 'likes')
+    feature_hist(feature_events, feature_events_no, 'likes', cut_from=CUT_FROM)
 
     #analyze(feature_events_no, feature_name='likes-no events_yes')
     #analyze(feature_events, feature_name='retwelikesets-events_yes')
@@ -220,7 +249,7 @@ def groupExtractFeatures(group_feature_set, feature_names):
 
     for feature_name in feature_names:
         print("handle feature:", feature_name)
-        feature_hist(feature_events[feature_name], feature_events_no[feature_name], feature_name)
+        feature_hist(feature_events[feature_name], feature_events_no[feature_name], feature_name, cut_from=CUT_FROM)
 
 def groupSizeFeature(events_yes, events_no):
     groups_no = events_no.groupby('root')
@@ -231,7 +260,7 @@ def groupSizeFeature(events_yes, events_no):
 
     feature_events = agg_events['id']['count']
     feature_events_no = agg_events_no['id']['count']
-    feature_hist(feature_events, feature_events_no, 'groups1')
+    feature_hist(feature_events, feature_events_no, 'groups1', cut_from=CUT_FROM)
 
 
 def findBigComponents(tweets, title):
@@ -270,8 +299,9 @@ def plotGraphSet(tweets, components, title):
         fig.show()
     else:
         global img_idx
-        fig.savefig('c:/temp/img_' + SUFFEX + "_" + VERSION + "_"  + str(img_idx)+ ".png")
+        savefig(fig)
         img_idx += 1
+    plt.close()
 
 
 def groupFeatures(dataset, events_yes, events_no):
@@ -292,13 +322,14 @@ def groupFeatures(dataset, events_yes, events_no):
                        "FROM dataset "
                        "GROUP BY root;", locals())
     print("writing features to csv file...")
-    components.to_csv("c:/temp/features_"+ SUFFEX + "_" + VERSION +".csv", sep="\t")
+    components.to_csv(FOLDER+"/features_" + str(CUT_FROM) + "_" + SUFFEX + "_" + VERSION +".csv", sep="\t")
 
-    #Samer: findDeepComponents(events_no, "w/o events")
-    #Samer: findBigComponents(events_no, "w/o events")
+    if GENERATE_GRAPH:
+        findDeepComponents(events_no, "w/o events")
+        findBigComponents(events_no, "w/o events")
 
-    #Samer: findDeepComponents(events_yes, "with events")
-    #Samer: findBigComponents(events_yes, "with events")
+        findDeepComponents(events_yes, "with events")
+        findBigComponents(events_yes, "with events")
 
     #print('group by root field')
     #groups_no = events_no.groupby('root')
@@ -327,7 +358,7 @@ def groupFeatures(dataset, events_yes, events_no):
 
 
 def plotGraph(dataset, root, ax):
-    q = 'SELECT userId, parentUserId, parentType FROM dataset WHERE root == "%s"' % root
+    q = 'SELECT id, parent, parentType FROM dataset WHERE root == "%s"' % root
     component = sqldf(q, locals())
     #component = dataset[dataset['root'] == root]
     #print("Found : " , len(component), " related items")
@@ -335,7 +366,7 @@ def plotGraph(dataset, root, ax):
     G = nx.DiGraph()
     #component.to_csv('c:/temp/%s.csv' % root, sep=',')
     #print(component)
-    G.add_edges_from(component[['userId', 'parentUserId']].values, weight=1)
+    G.add_edges_from(component[['id', 'parent']].values, weight=1)
     #G.add_edges_from([('D', 'A'), ('D', 'E'), ('B', 'D'), ('D', 'E')], weight=2)
     #G.add_edges_from([('B', 'C'), ('E', 'F')], weight=3)
     #G.add_edges_from([('C', 'F')], weight=4)
@@ -345,6 +376,7 @@ def plotGraph(dataset, root, ax):
 
     values = [val_map.get(node, 0.45) for node in G.nodes()]
 
+    #edge_labels = parentType
     #edge_labels = dict([((u, v,), d['weight'])
     #                    for u, v, d in G.edges(data=True)])
     #red_edges = [('C', 'D'), ('D', 'A')]
@@ -353,7 +385,12 @@ def plotGraph(dataset, root, ax):
     pos = nx.spring_layout(G)
     #nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
     #print(ax)
-    nx.draw(G, pos=pos, ax=ax, node_color=values, edge_cmap=plt.cm.Reds)
+    nx.draw(G, pos=pos, ax=ax, with_labels=True, font_size=8, node_color=values, edge_cmap=plt.cm.Reds)
+    labels = G.nodes()
+    #labels = {}
+    #labels = {k : k for k in labels}
+    #nx.draw_networkx_labels(G, pos, labels, font_size=8)
+    #plt.axis('off')
     #nx.draw(G, pos, node_color=values, node_size=1500, edge_color=edge_colors, edge_cmap=plt.cm.Reds)
     #pylab.hold(True)
     #pylab.show()
@@ -361,19 +398,19 @@ def plotGraph(dataset, root, ax):
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (end) group level features %%%%%%%%%%%%%%%%%%%%%%%%
 
 
-def feature_hist(feature_events, feature_events_no, feature_name):
+def feature_hist(feature_events, feature_events_no, feature_name, cut_from=None):
     fig, axes = plt.subplots(nrows=2, ncols=1)
     ax0, ax1 = axes.flatten()
 
     bins = 50
 
-    hist (feature_events_no, ax0, feature_name+' - no events (hist)', feature_name, 'count', bins=bins, color="red")
+    hist (feature_events_no, ax0, feature_name+' - no events (hist)', feature_name, 'count', bins=bins, color="red", cut_from=cut_from)
     #hist1(feature_events_no, ax2, feature_name+' - no events - hist1', feature_name, 'count', bins=bins, color="red")
 
     #hist(feature_events_no, ax2, feature_name+' - no events', feature_name, 'count2', bins=bins, color="red")
     #hist(feature_events_no, ax4, feature_name+' (log) - no events', feature_name, 'log(count)', log=True, bins=bins, color="red")
 
-    hist (feature_events, ax1, feature_name+' - events (hist)', feature_name, 'count', bins=bins, color="blue")
+    hist (feature_events, ax1, feature_name+' - events (hist)', feature_name, 'count', bins=bins, color="blue", cut_from=cut_from)
     #hist1(feature_events, ax3, feature_name+' - events- hist1', feature_name, 'count', bins=bins, color="blue")
     #hist(feature_events, ax3, feature_name+' - events', feature_name, 'count2', bins=bins, color="blue")
     #hist(feature_events, ax3, feature_name+' (normalized) - events', normed=1, bins=bins, color="blue")
@@ -387,8 +424,9 @@ def feature_hist(feature_events, feature_events_no, feature_name):
         plt.show()
     else:
         global img_idx
-        plt.savefig('c:/temp/img_' + SUFFEX + "_" + VERSION + "_" + str(img_idx) + ".png")
+        savefig(fig)
         img_idx += 1
+    plt.close()
 
     fig, axes = plt.subplots(nrows=2, ncols=2)
 
@@ -419,8 +457,9 @@ def feature_hist(feature_events, feature_events_no, feature_name):
     if SHOW_ONLY:
         plt.show()
     else:
-        plt.savefig('c:/temp/img_' + SUFFEX + "_" + VERSION + "_" + str(img_idx) + ".png")
+        savefig(fig)
         img_idx += 1
+    plt.close()
 
 
     print("Plotted features for", feature_name)
