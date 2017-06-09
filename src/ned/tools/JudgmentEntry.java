@@ -16,7 +16,7 @@ public class JudgmentEntry implements Comparable<JudgmentEntry>
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof JudgmentEntry)
+		if (obj.getClass().getName().equals( JudgmentEntry.class.getName()) )
 		{
 			return doc.equals( ((JudgmentEntry) obj).doc );
 		}

@@ -332,10 +332,11 @@ public class ExpandPositiveDS {
 			entry.append(", \"status\": \"Loaded\", \"topic_id\": ");
 			entry.append(element.topic);
 			entry.append("}");
-
+			
+			entry.append("\n");
 
 			
-			out.println(entry.toString());
+			out.print(entry.toString());
 		}
 		
 		out.close();

@@ -1,19 +1,46 @@
 package ned.tools;
 
 import java.io.PrintStream;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
 import ned.types.Document;
-import ned.types.GlobalData;
 
 public class FlattenToCSVWorker extends ProcessorWorker
 {
+	private static final String PREFIX = "";
 	PrintStream out;
+	private Graph<String, DefaultEdge> graph;
+
 	
-    public FlattenToCSVWorker(PrintStream out, String docJson)
+    public FlattenToCSVWorker(PrintStream out, Graph<String, DefaultEdge> graph, String docJson)
     {
         super( docJson );
         this.out = out;
+        this.graph = graph;
     }
 
+    
+    /*
+
+    try {
+        URL amazon = new URL("http://www.amazon.com");
+        URL yahoo = new URL("http://www.yahoo.com");
+        URL ebay = new URL("http://www.ebay.com");
+
+        // add the vertices
+        g.addVertex(amazon);
+        g.addVertex(yahoo);
+        g.addVertex(ebay);
+
+        // add edges to create linking structure
+        g.addEdge(yahoo, amazon);
+        g.addEdge(yahoo, ebay);
+    } catch (MalformedURLException e) {
+        e.printStackTrace();
+    }
+
+	*/
+    
     @Override
     protected void processCommand() 
     {
@@ -24,8 +51,11 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		
 		
 		writeToCSV(doc);
+	
+		
 		
     }
+    
     protected void writeToCSV(Document doc) 
     {
 		String jRply = handleNull(doc.getReplyTo());
@@ -42,7 +72,8 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		int likes = doc.getFavouritesCount();
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("i").append(id).append(",");
+		String tmpId = PREFIX + id;
+		sb.append(tmpId).append(",");
 		sb.append(userId).append(",");
 		sb.append(created_at).append(",");
 		sb.append(timestamp).append(",");
@@ -54,24 +85,39 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		String parentUser = "";
 		if(jRply!=null && !jRply.isEmpty())
 		{
-			parent = "i" + jRply; 
+			parent = PREFIX + jRply; 
 			parentUser = doc.getReplyToUserId();
 			parentType = "1";
 		}
 
 		if(jRtwt != null && !jRtwt.isEmpty())
 		{
-			parent = "i" + jRtwt ; 
+			parent = PREFIX + jRtwt ; 
 			parentUser = doc.getRetweetedUserId();
 			parentType = "2";
 		}
 		
 		if(jQuote != null && !jQuote.isEmpty())
 		{
-			parent = "i" + jQuote ; 
+			parent = PREFIX + jQuote ; 
 			parentUser = doc.getQuotedUserId();
 			parentType = "3";
 		}
+		
+		synchronized (graph)
+		{
+			if (!parent.trim().equals("") && !graph.containsVertex(parent))
+				graph.addVertex(parent);
+			
+			if (!graph.containsVertex(tmpId))
+				graph.addVertex(tmpId);
+		}
+		
+		//CustomEdge e = new CustomEdge(parentType);
+		//if(!parent.trim().equals("") && graph.containsVertex(parent)) 
+		//	graph.addEdge(tmpId,  parent);
+		
+		//System.out.println( graph.edgeSet().size() );
 		
 		sb.append(parent).append(",");
 		sb.append(parentUser).append(",");
@@ -84,7 +130,7 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		long timeLag = -1;
 		if(entry != null)
 		{
-			root = "i" + entry.leadId;
+			root = PREFIX + entry.leadId;
 			level = entry.level;
 			//Document rootDoc = GlobalData.getInstance().getDocumentFromRedis("id2doc_parser", entry.leadId);
 			timeLag = -1;
@@ -96,10 +142,10 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb.append(timeLag).append(",");
 		Integer topic_id = FlattenDatasetMain_Step1.getTopic( id );
 		sb.append(topic_id).append(",");
-		sb.append(topic_id > -1 ? "yes" : "no").append(",");
-		sb.append("$");
+		sb.append(topic_id.equals("-1") ? "no" : "yes").append(",");
+		sb.append("$\n");
 		
-		out.println(sb.toString());
+		out.print(sb.toString());
     }
 
 	private String handleNull(String value) 

@@ -24,7 +24,7 @@ except:
 
 
 VERSION = 'V1'
-SUFFEX = "15m"
+SUFFEX = "300k"
 CUT_FROM=None
 img_idx = 0
 SHOW_ONLY=False
@@ -155,7 +155,7 @@ def hist(feature, ax, title, xlabel, ylabel, bins=100, normed=0, log=False, colo
             newhist = []
             newxbin = []
 
-        print("maximum: ", max(hist))
+        #print("maximum: ", max(hist))
 
         tmp1 = [np.sum(xbins[0:9])]
         center = (xbins[:-1] + xbins[1:]) / 2
@@ -510,6 +510,6 @@ def analyzeDataset(filename, sep=','):
 
 if __name__ == "__main__":
 
-    analyzeDataset('c:/temp/dataset_' + SUFFEX + "_" + VERSION + '.txt', sep=',')
+    analyzeDataset('C:/temp/threads_petrovic_all/dataset_' + SUFFEX + "_" + VERSION + '.txt', sep=',')
     #analyzeDataset('c:/temp/dataset1.2.txt')
     #analyzeDataset('c:/temp/dataset1.4.txt')

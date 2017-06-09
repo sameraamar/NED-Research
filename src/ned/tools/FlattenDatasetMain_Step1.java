@@ -12,6 +12,16 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
+
+import org.jgrapht.Graph;
+import org.jgrapht.ext.CSVExporter;
+import org.jgrapht.ext.CSVFormat;
+import org.jgrapht.ext.GraphExporter;
+import org.jgrapht.ext.GraphMLExporter;
+import org.jgrapht.ext.VisioExporter;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -35,26 +45,51 @@ public class FlattenDatasetMain_Step1 {
 		try {
 			
 			long base = System.nanoTime();
-			String suffex = "temp";
-			String csvfilename = "c:/temp/dataset_"+suffex+"_" + VERSION + ".txt";
+			String suffex = "300k";
+			String folder = "C:\\temp\\threads_petrovic_all\\mt_results";
+			String csvfilename = folder+"\\dataset_"+suffex+"_" + VERSION + ".txt";
 			PrintStream dataout = new PrintStream(new FileOutputStream(csvfilename));
 
-			String filename = "C:\\data\\events_db\\petrovic\\relevance_judgments_00000000";
-			flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000_"+suffex+"_" + VERSION + ".csv");
+			//String filename = "C:\\data\\events_db\\petrovic\\relevance_judgments_00000000";
+			//flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000_"+suffex+"_" + VERSION + ".csv");
+			
+			loadLabeledData(folder+"\\positive_labeled.txt");
 
 
 			id2group = new Hashtable<String, Entry>(); // HashtableRedis<Entry>("mapper.id2group", Entry.class);
 			doMain(0);
-			dumpGroups("c:/temp/id2group_"+suffex+"_" + VERSION + ".txt");
+			dumpGroups(folder+"\\id2group_"+suffex+"_" + VERSION + ".txt");
 
-			mapper = new FlattenToCSVExecutor(dataout, GlobalData.getInstance().getParams().number_of_threads);
+		    Graph<String, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
+
+			mapper = new FlattenToCSVExecutor(dataout, g, GlobalData.getInstance().getParams().number_of_threads);
 			ExecutorMonitorThread monitor = new FlattenDatasetMonitor(mapper.getExecutor(), 2);
 			monitor.start();
 			doMain(1);
+			
 			mapper.shutdown();
 			
 			//monitor.shutdown();
+			String txt = g.toString();
+			//System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() + ": " + txt);
+			System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() );
 			
+			
+			GraphExporter<String, DefaultEdge> ge = new GraphMLExporter<String, DefaultEdge>();
+			
+			PrintStream graphOutput = new PrintStream(folder+"\\graph.html");
+			ge.exportGraph(g, graphOutput);
+			
+			//System.out.println( g.edgeSet().toString() );
+			
+			try {
+				System.in.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			monitor.shutdown();
 			System.out.println("Finished in " + (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-base)/1000.0) + " seconds.");
 			
 		} catch(Exception e) {
@@ -141,25 +176,28 @@ public class FlattenDatasetMain_Step1 {
 		boolean stop = false;
 		long base = System.nanoTime();
 		long middletime = base;
-		int fileidx = 0;
 		//id2group.reset();
 		ids = new ArrayList<String>();
 		
     	Session.getInstance().message(Session.ERROR, "Reader", "Loading data...");
 
     	int offset = gd.getParams().offset;
-		for (String filename : files) {
-			fileidx ++;
+		int skip_files = (offset / 500_000);
+		offset = offset % 500_000;
+		int fileidx = -1;
 
+    	for (String filename : files) {
+			fileidx++;
 			if (stop)
 				break;
 			
-	    	Session.getInstance().message(Session.INFO, "Reader", "reading from file: " + filename);
-			if(fileidx < gd.getParams().skip_files)
+			if(fileidx < skip_files)
 			{
-            	Session.getInstance().message(Session.INFO, "Reader", "Skipping file " + fileidx );
+            	Session.getInstance().message(Session.INFO, "Reader", "Skipping file " + fileidx + ": " + filename);
 				continue;
 			}
+	    	Session.getInstance().message(Session.INFO, "Reader", "reading from file: " + filename);
+
 			
 			GZIPInputStream stream = new GZIPInputStream(new FileInputStream(folder + "/" + filename));
 			Reader decoder = new InputStreamReader(stream, "UTF-8");
@@ -279,7 +317,26 @@ public class FlattenDatasetMain_Step1 {
 		groupsOut.close();
 	}
 
-	public static void flattenLabeledData(String inputfile, String outputfile) throws IOException
+	public static void loadLabeledData(String inputfile) throws IOException
+	{
+		positive = new Hashtable<String, Integer> ();
+		FileInputStream stream = new FileInputStream(inputfile);
+		Reader decoder = new InputStreamReader(stream, "UTF-8");
+		BufferedReader buffered = new BufferedReader(decoder);
+		System.out.println("Loading file: " + inputfile + " to memory");
+		
+		String line=buffered.readLine(); //header
+		line=buffered.readLine();
+		while(line!=null)
+		{
+			String[] values = line.split("\t");
+			positive.put(values[0], Integer.parseInt(values[2]));
+			line=buffered.readLine();
+		}
+		
+		buffered.close();
+	}
+	public static void flattenAndLoadLabeledData(String inputfile, String outputfile) throws IOException
 	{		
 		FileInputStream stream = new FileInputStream(inputfile);
 		Reader decoder = new InputStreamReader(stream, "UTF-8");
@@ -299,7 +356,7 @@ public class FlattenDatasetMain_Step1 {
         {
 			JsonParser jsonParser = new JsonParser();
 			JsonObject jsonObj = jsonParser.parse(line).getAsJsonObject();
-			int topic = jsonObj.get("topic_id").getAsInt();
+			Integer topic = jsonObj.get("topic_id").getAsInt();
 			String status = jsonObj.get("status").getAsString();
 			
 			/*JsonElement tweet = jsonObj.get("json");
@@ -321,9 +378,10 @@ public class FlattenDatasetMain_Step1 {
 			sb.append(topic).append(",");
 			sb.append(status);
 			
+			sb.append("\n");
 			positive.put(id, topic);
 			
-			output.println(sb);
+			output.print(sb);
 			
 			if(count % 1000 == 0)
 				System.out.println("Loaded " + count);
