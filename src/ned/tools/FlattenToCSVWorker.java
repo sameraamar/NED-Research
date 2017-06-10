@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import ned.types.Document;
+import ned.types.Entry;
 
 public class FlattenToCSVWorker extends ProcessorWorker
 {
@@ -104,13 +105,16 @@ public class FlattenToCSVWorker extends ProcessorWorker
 			parentType = "3";
 		}
 		
-		synchronized (graph)
+		if(graph != null)
 		{
-			if (!parent.trim().equals("") && !graph.containsVertex(parent))
-				graph.addVertex(parent);
-			
-			if (!graph.containsVertex(tmpId))
-				graph.addVertex(tmpId);
+			synchronized (graph)
+			{
+				if (!parent.trim().equals("") && !graph.containsVertex(parent))
+					graph.addVertex(parent);
+				
+				if (!graph.containsVertex(tmpId))
+					graph.addVertex(tmpId);
+			}
 		}
 		
 		//CustomEdge e = new CustomEdge(parentType);
@@ -124,25 +128,25 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb.append(parentType).append(",");
 		
 		
-		Entry entry = FlattenDatasetMain_Step1.id2group.get( id );
+		Entry entry = FlattenDatasetMain_Step1.id2group2.get( id );
 		String root = "";
 		int level = 0;
 		long timeLag = -1;
 		if(entry != null)
 		{
-			root = PREFIX + entry.leadId;
-			level = entry.level;
+			root = PREFIX + entry.getLeadId();
+			level = entry.getLevel();
 			//Document rootDoc = GlobalData.getInstance().getDocumentFromRedis("id2doc_parser", entry.leadId);
 			timeLag = -1;
-			timeLag = timestamp - entry.firstTimestamp;
+			timeLag = timestamp - entry.getFirstTimestamp();
 		}
 
 		sb.append(root).append(",");
 		sb.append(level).append(",");
 		sb.append(timeLag).append(",");
-		Integer topic_id = FlattenDatasetMain_Step1.getTopic( id );
+		Integer topic_id = -1; //FlattenDatasetMain_Step1.getTopic( id );
 		sb.append(topic_id).append(",");
-		sb.append(topic_id.equals("-1") ? "no" : "yes").append(",");
+		sb.append(topic_id == -1 ? "no" : "yes").append(",");
 		sb.append("$\n");
 		
 		out.print(sb.toString());

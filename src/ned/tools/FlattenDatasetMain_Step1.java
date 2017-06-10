@@ -14,29 +14,34 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 import org.jgrapht.Graph;
-import org.jgrapht.ext.CSVExporter;
-import org.jgrapht.ext.CSVFormat;
+//import org.jgrapht.Graph;
 import org.jgrapht.ext.GraphExporter;
 import org.jgrapht.ext.GraphMLExporter;
 import org.jgrapht.ext.VisioExporter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import ned.main.ExecutorMonitorThread;
 import ned.types.Document;
+import ned.types.Entry;
 import ned.types.GlobalData;
 import ned.types.Session;
 import ned.types.Utility;
 
+
+/**
+ * 
+ * @author t-samera
+ * @deprecated use {@link IdentifyInteractionGraph} and then call {@link FlattenDatasetMain}
+ */
 public class FlattenDatasetMain_Step1 {
 	private static final String VERSION = "V1";
 	private static FlattenToCSVExecutor mapper;
 	public static int processed;
-	private static Hashtable<String, Integer> positive;
-	public static Hashtable<String, Entry> id2group;
+	//private static Hashtable<String, Integer> positive;
+	public static Hashtable<String, Entry> id2group2;
 	//private static HashtableRedis<Entry> id2group;
 	private static ArrayList<String> ids;
 	
@@ -46,22 +51,24 @@ public class FlattenDatasetMain_Step1 {
 			
 			long base = System.nanoTime();
 			String suffex = "300k";
-			String folder = "C:\\temp\\threads_petrovic_all\\mt_results";
+			String folder = "C:\\temp\\threads_petrovic_all\\petrovic_only"; //petrovic_only"; mt_results
 			String csvfilename = folder+"\\dataset_"+suffex+"_" + VERSION + ".txt";
-			PrintStream dataout = new PrintStream(new FileOutputStream(csvfilename));
 
 			//String filename = "C:\\data\\events_db\\petrovic\\relevance_judgments_00000000";
 			//flattenLabeledData(filename, "c:/temp/relevance_judgments_00000000_"+suffex+"_" + VERSION + ".csv");
 			
-			loadLabeledData(folder+"\\positive_labeled.txt");
+			//loadLabeledData(folder+"\\positive_labeled.txt");
 
 
-			id2group = new Hashtable<String, Entry>(); // HashtableRedis<Entry>("mapper.id2group", Entry.class);
+			id2group2 = new Hashtable<String, Entry>(); // HashtableRedis<Entry>("mapper.id2group", Entry.class);
 			doMain(0);
 			dumpGroups(folder+"\\id2group_"+suffex+"_" + VERSION + ".txt");
 
-		    Graph<String, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
+		    Graph<String, DefaultEdge> g = null; 
+		    if(false)
+		    	g = new DefaultDirectedGraph<>(DefaultEdge.class);
 
+			PrintStream dataout = new PrintStream(new FileOutputStream(csvfilename));
 			mapper = new FlattenToCSVExecutor(dataout, g, GlobalData.getInstance().getParams().number_of_threads);
 			ExecutorMonitorThread monitor = new FlattenDatasetMonitor(mapper.getExecutor(), 2);
 			monitor.start();
@@ -69,27 +76,22 @@ public class FlattenDatasetMain_Step1 {
 			
 			mapper.shutdown();
 			
-			//monitor.shutdown();
-			String txt = g.toString();
-			//System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() + ": " + txt);
-			System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() );
+			if(g != null)
+			{
+				String txt = g.toString();
+				//System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() + ": " + txt);
+				System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() );
 			
 			
-			GraphExporter<String, DefaultEdge> ge = new GraphMLExporter<String, DefaultEdge>();
+				GraphExporter<String, DefaultEdge> ge = new GraphMLExporter<String, DefaultEdge>();
 			
-			PrintStream graphOutput = new PrintStream(folder+"\\graph.html");
-			ge.exportGraph(g, graphOutput);
-			
-			//System.out.println( g.edgeSet().toString() );
-			
-			try {
-				System.in.read();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				PrintStream graphOutput = new PrintStream(folder+"\\graph.html");
+				ge.exportGraph(g, graphOutput);
+				//System.out.println( g.edgeSet().toString() );	
 			}
-
+			
 			monitor.shutdown();
+			
 			System.out.println("Finished in " + (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-base)/1000.0) + " seconds.");
 			
 		} catch(Exception e) {
@@ -238,21 +240,21 @@ public class FlattenDatasetMain_Step1 {
 					if(rply == null && rtwt == null)
 					{
 						Entry e = new Entry(doc.getId(), doc.getTimestamp(), 0);
-						id2group.put(doc.getId(), e);
+						id2group2.put(doc.getId(), e);
 					}
 					else if(rply != null || rtwt != null)
 					{
 						String myLeadId = rtwt!=null ? rtwt : rply;
 						
-						Entry leadE = id2group.get(myLeadId);
+						Entry leadE = id2group2.get(myLeadId);
 						if (leadE == null)
 						{
 							leadE = new Entry(myLeadId, doc.getTimestamp(), 0);
-							id2group.put(myLeadId, leadE);
+							id2group2.put(myLeadId, leadE);
 						}
 
-						Entry e = new Entry(leadE.leadId, leadE.firstTimestamp, leadE.level+1);
-						id2group.put(doc.getId(), e);
+						Entry e = new Entry(leadE.getLeadId(), leadE.getFirstTimestamp(), leadE.getLevel()+1);
+						id2group2.put(doc.getId(), e);
 					}
 					
 				}
@@ -270,7 +272,7 @@ public class FlattenDatasetMain_Step1 {
 	            	msg.append("] Processed " ).append ( processed ).append(" docs. ");
 	            	long seconds = TimeUnit.NANOSECONDS.toSeconds( System.nanoTime() - base);
 	            	msg.append(" elapsed time: ").append(Utility.humanTime(seconds));
-	            	msg.append("(AHT: ").append(average2).append(" ms). ");
+	            	//msg.append("(AHT: ").append(average2).append(" ms). ");
 	            	
 	            	Session.getInstance().message(Session.INFO, "Reader", msg.toString());
 	            	
@@ -301,22 +303,22 @@ public class FlattenDatasetMain_Step1 {
 		groupsOut.println("id,leadId,depth,topic");
 		for (int i=0; i<ids.size(); i++)
 		{
-			Entry e = id2group.get(ids.get(i));
+			Entry e = id2group2.get(ids.get(i));
 			
-			String leadId = e.leadId;
+			String leadId = e.getLeadId();
 			StringBuffer sb = new StringBuffer();
 			sb.append(ids.get(i));
 			sb.append(",");
 			sb.append(leadId);
 			sb.append(",");
-			sb.append(e.level);
+			sb.append(e.getLevel());
 			sb.append(",");
-			sb.append(positive.get(ids.get(i)));
+			//sb.append(positive.get(ids.get(i)));
 			groupsOut.println(sb.toString());
 		}
 		groupsOut.close();
 	}
-
+	/*
 	public static void loadLabeledData(String inputfile) throws IOException
 	{
 		positive = new Hashtable<String, Integer> ();
@@ -336,6 +338,7 @@ public class FlattenDatasetMain_Step1 {
 		
 		buffered.close();
 	}
+	
 	public static void flattenAndLoadLabeledData(String inputfile, String outputfile) throws IOException
 	{		
 		FileInputStream stream = new FileInputStream(inputfile);
@@ -359,13 +362,13 @@ public class FlattenDatasetMain_Step1 {
 			Integer topic = jsonObj.get("topic_id").getAsInt();
 			String status = jsonObj.get("status").getAsString();
 			
-			/*JsonElement tweet = jsonObj.get("json");
-			if(tweet==null || tweet.isJsonNull())
-			{
-				skip++;
-				line=buffered.readLine();
-				continue;
-			}*/
+			//JsonElement tweet = jsonObj.get("json");
+			//if(tweet==null || tweet.isJsonNull())
+			//{
+			//	skip++;
+			//	line=buffered.readLine();
+			//	continue;
+			//}
 			
 			String id = jsonObj.get("_id").toString();
 			//String json = jsonObj.get("json").toString();
@@ -400,5 +403,5 @@ public class FlattenDatasetMain_Step1 {
 	{
 		return positive.getOrDefault(id, -1);
 	}
-	
+	*/
 }
