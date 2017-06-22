@@ -1,31 +1,23 @@
 package ned.tools;
 
 import java.io.PrintStream;
-import java.util.Hashtable;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
 import ned.types.Document;
 import ned.types.Entry;
-import ned.types.RedisBasedMap;
 
 public class FlattenToCSVWorker extends ProcessorWorker
 {
 	private static final String PREFIX = "";
-	PrintStream outFull;
-	PrintStream outShort;
-	RedisBasedMap<String, Entry> id2group;
-	Hashtable<String, String> positive;
-	AtomicInteger counter;
+	PrintStream out;
+	private Graph<String, DefaultEdge> graph;
 
 	
-    public FlattenToCSVWorker(PrintStream outFull, PrintStream outShort, RedisBasedMap<String, Entry> id2group, Hashtable<String, String> positive, AtomicInteger counter, String docJson)
+    public FlattenToCSVWorker(PrintStream out, Graph<String, DefaultEdge> graph, String docJson)
     {
         super( docJson );
-        this.outFull = outFull;
-        this.outShort = outShort;
-        this.id2group = id2group;
-        this.positive = positive;
-        this.counter = counter;
+        this.out = out;
+        this.graph = graph;
     }
 
     
@@ -56,14 +48,12 @@ public class FlattenToCSVWorker extends ProcessorWorker
 
     	Document doc = Document.parse(docJson, false);
 		if(doc == null)
-		{
-			this.counter.incrementAndGet();
 			return;
-		}
+		
 		
 		writeToCSV(doc);
 	
-		this.counter.incrementAndGet();
+		
 		
     }
     
@@ -115,12 +105,30 @@ public class FlattenToCSVWorker extends ProcessorWorker
 			parentType = "3";
 		}
 		
+		if(graph != null)
+		{
+			synchronized (graph)
+			{
+				if (!parent.trim().equals("") && !graph.containsVertex(parent))
+					graph.addVertex(parent);
+				
+				if (!graph.containsVertex(tmpId))
+					graph.addVertex(tmpId);
+			}
+		}
+		
+		//CustomEdge e = new CustomEdge(parentType);
+		//if(!parent.trim().equals("") && graph.containsVertex(parent)) 
+		//	graph.addEdge(tmpId,  parent);
+		
+		//System.out.println( graph.edgeSet().size() );
+		
 		sb.append(parent).append(",");
 		sb.append(parentUser).append(",");
 		sb.append(parentType).append(",");
 		
 		
-		Entry entry = id2group.get( id );
+		Entry entry = FlattenDatasetMain_Step1.id2group2.get( id );
 		String root = "";
 		int level = 0;
 		long timeLag = -1;
@@ -136,24 +144,12 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb.append(root).append(",");
 		sb.append(level).append(",");
 		sb.append(timeLag).append(",");
-		String topicId = positive.get( id );
-		if(topicId == null || topicId.equals("-1"))
-			topicId = "";
-		sb.append(topicId).append(",");
-		sb.append(topicId.equals("") ? "no" : "yes");
-		sb.append("\n");
+		Integer topic_id = -1; //FlattenDatasetMain_Step1.getTopic( id );
+		sb.append(topic_id).append(",");
+		sb.append(topic_id == -1 ? "no" : "yes").append(",");
+		sb.append("$\n");
 		
-		outFull.print(sb.toString());
-		
-		
-		sb = new StringBuffer();
-		sb.append(tmpId).append(",");
-		sb.append(root).append(",");
-		sb.append(topicId).append(",");
-		sb.append(topicId.equals("") ? "no" : "yes");
-		sb.append("\n");
-		
-		outShort.print(sb.toString());
+		out.print(sb.toString());
     }
 
 	private String handleNull(String value) 

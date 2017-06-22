@@ -29,7 +29,7 @@ CUT_FROM=None
 img_idx = 0
 SHOW_ONLY=False
 GENERATE_GRAPH=True
-FOLDER = 'C:/temp/threads_petrovic_all/analysis_3m'
+FOLDER = 'C:/data/Thesis/threads_petrovic_all/analysis_3m'
 
 def savefig(fig):
     newname = FOLDER + '/img_' + str(CUT_FROM) + '_' + SUFFEX + "_" + VERSION + "_" + str(img_idx) + ".png"
@@ -304,25 +304,10 @@ def plotGraphSet(tweets, components, title):
     plt.close()
 
 
-def groupFeatures(dataset, events_yes, events_no):
+def groupFeatures(filename):
     print("query feature set...")
-    components = sqldf("SELECT root, "
-                       "COUNT(*) size, "
-                       "COUNT(DISTINCT userId) AS users_count, "
-                       "SUM(retweets)/COUNT(*) as retweet_per_tweet, "
-                       "MIN(retweets) as retweet_min, "
-                       "MAX(retweets) as retweet_max, "
-                       "AVG(likes) as likes_avg, "
-                       "MAX(likes) as likes_max, "
-                       'MAX(depth) as depth_max, '
-                       'MAX(topic_id) AS topic_id, '
-                       'MAX(topic_id)>-1 AS is_event, '
-                       'SUM(CASE WHEN parentType=2 THEN 1 ELSE 0 END) AS internal_rtwts, '
-                       'SUM(CASE WHEN parentType=1 THEN 1 ELSE 0 END) AS internal_rplys '
-                       "FROM dataset "
-                       "GROUP BY root;", locals())
-    print("writing features to csv file...")
-    components.to_csv(FOLDER+"/features_" + str(CUT_FROM) + "_" + SUFFEX + "_" + VERSION +".csv", sep="\t")
+
+    components = pandas.read_csv(filename, sep=',')
 
     if GENERATE_GRAPH:
         findDeepComponents(events_no, "w/o events")
@@ -503,13 +488,17 @@ def analyzeDataset(filename, sep=','):
     print("found", len(events_yes), "tweets with", len(groups2)-1, "events")
     print("found", len(events_no), "tweets without any specific events")
 
-    groupFeatures(dataset, events_yes, events_no)
+    groupFeatures('events_yes.txt_features.csv')
+    groupFeatures('events_no.txt_features.csv')
 
     retweets(events_yes, events_no)
     likes(events_yes, events_no)
 
 if __name__ == "__main__":
 
-    analyzeDataset(FOLDER+'/dataset_full_' + SUFFEX + "_" + VERSION + '.txt', sep=',')
+    groupFeatures(FOLDER+'/events_yes.txt_features.csv')
+    groupFeatures(FOLDER+'/events_no.txt_features.csv')
+
+    #analyzeDataset(FOLDER+'/dataset_full_' + SUFFEX + "_" + VERSION + '.txt', sep=',')
     #analyzeDataset('c:/temp/dataset1.2.txt')
     #analyzeDataset('c:/temp/dataset1.4.txt')

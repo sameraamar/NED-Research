@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -25,24 +26,26 @@ import ned.types.GlobalData;
 public class EnrichPositiveLabeledDataset {
 
 	private static final String DELIMITER = " ||| ";
+	private static int LIMIT = 5000000;
 
 	public static void main(String[] args) throws Exception {
 		//getDocuments();
-		String folder = "C:\\temp\\threads_petrovic_all\\mt_results";
-		String filename = "C:\\temp\\threads_petrovic_all\\full_all.txt";
+		String folder = "C:/data/Thesis/threads_petrovic_all/analysis_3m";
+		String filename = "C:/data/Thesis/threads_petrovic_all/full_all.txt";
 
 		Hashtable<String, String> labeled = new Hashtable<String, String>();
 	
-		//step1_1_loadLabeled("C:\\data\\events_db\\petrovic\\relevance_judgments_00000000", labeled);
-		step1_2_LoadLabeled("C:\\temp\\threads_petrovic_all\\mechanical_turk_positive_labeled.txt", labeled);
+		step1_2_LoadLabeled("C:/data/Thesis/threads_petrovic_all/mechanical_turk_positive_labeled.txt", labeled);
+		step1_1_loadLabeled("C:/data/Thesis/events_db/petrovic/relevance_judgments_00000000", labeled);
 		System.out.println( labeled );
 
-		String filenameOut = folder+"\\has_topics.txt";
-		step2_countHits(labeled, filename, filenameOut);
+		String yesOut = folder+"/has_topics_YES.txt";
+		String noOut = folder+"/has_topics_NO.txt";
+		step2_countHits(labeled, filename, yesOut, noOut);
 		
 
-		String labeledFileName = folder+"\\positive_labeled.txt";
-		step3_createLabeledDataset(filenameOut, labeledFileName);
+		String labeledFileName = folder+"/positive_labeled.txt";
+		step3_createLabeledDataset(yesOut, labeledFileName);
 		
 		//updateText();
 	}
@@ -68,12 +71,12 @@ public class EnrichPositiveLabeledDataset {
 		        if(count % 1000 == 0)
 		        	System.out.println("createLabeledDataset:\t" + count);
 		        
-		        String[] values = line.split(Pattern.quote(DELIMITER));
+		        String[] values = line.split("\t");
 		        
-		        String topic = values[0];
-		        String id = values[2];
-		        String leadId = values[1];
-		        String text = values[12] + values[13];
+		        String topic = values[8];
+		        String id = values[1];
+		        String leadId = values[0];
+		        String text = values[9];
 		        
 		    	out.print(id + "\t" + leadId + "\t" + topic + "\t" + text + "\n");
 		    	
@@ -235,32 +238,45 @@ public class EnrichPositiveLabeledDataset {
 	
 	
 
-	static public void step2_countHits(Hashtable<String, String> labeled, String filename, String filenameOut)
+	static public void step2_countHits(Hashtable<String, String> labeled, String clustersInput, String yesOut, String noOut)
 	{
-		Map<String, String> cluster2Topic = markClustersWithTopics(filename, labeled);
+		Map<String, String> cluster2Topic = markClustersWithTopics(clustersInput, labeled);
 		
 		BufferedReader br = null;
 		try {
-			PrintStream out = new PrintStream(new FileOutputStream(filenameOut));
+			PrintStream yout = new PrintStream(new FileOutputStream(yesOut));
+			PrintStream nout = new PrintStream(new FileOutputStream(noOut));
+			//PrintStream allout = new PrintStream(new FileOutputStream(noOut+"all.txt"));
 
-			br = new BufferedReader(new FileReader(filename));
+			br = new BufferedReader(new FileReader(clustersInput));
 		    String line = br.readLine();
-		    //leadId\tid\tcreated\ttimestamp\tnearest\tdistance\tentropy\t#users\tsize\tage\tscore\ttext |||
 		    
-		    out.print(line + "\n");
+		    nout.print("leadId\tid\ttimestamp\tdistance\tentropy\t#users\tsize\tage\ttopic\ttext\n");
+		    yout.print("leadId\tid\ttimestamp\tdistance\tentropy\t#users\tsize\tage\ttopic\ttext\n");
+		    //allout.print("topic" + DELIMITER + line + "\n");
 			
-		    int count = 0;
-		    String leadId, topic;
+		    int yesEventCount = 0;
+		    int totalLines = 1;
+		    String leadId;
 	        int clustersCount = 0;
+	        
+	        ArrayList<String[]> cluster = new ArrayList<String[]>();
+	        String currentLeadId = "";
+	        String currentTopic = "";
+	        
 			while (line != null) {
 		        line = br.readLine();
 		        if(line==null || line.trim().equals(""))
+		        {
 		        	continue;
-	        
+		        }
+		        //allout.print(line+"\n");
+		        totalLines++;
+
 		        String[] values = line.split(Pattern.quote(DELIMITER));
 		        leadId = values[0];
 
-		    	//1: id
+		        //1: id
 		    	//2: created at
 		    	//3: time-stamp
 		    	//4: nearest
@@ -273,25 +289,52 @@ public class EnrichPositiveLabeledDataset {
 		    	//11: topic... removed!
 		    	//12: text
 
+		        if(leadId.equals(currentLeadId) )
+		        {
+		        	if(currentTopic == null && cluster2Topic.get(values[1]) != null)
+			    	{
+			    		currentTopic = cluster2Topic.get(values[1]);
+			    	}
+		        }
+		        
+		        else 
+		        {
+					if(printCluster(yout, nout, cluster, currentTopic))
+		        	{
+						clustersCount++;
+						if(currentTopic!=null && !currentTopic.isEmpty())
+				        	yesEventCount++;
+		        	}
+
+			        cluster = new ArrayList<String[]>();
+			        currentLeadId = leadId;
+			        currentTopic = cluster2Topic.get(leadId);
+			        
+		        }
+
+		        cluster.add( values );
+
 		    	
-		    	topic = cluster2Topic.get(leadId);
-		    	
-		    	if(topic != null)
-		    	{
-		    		out.print(topic + DELIMITER + line + "\n");
-		    		clustersCount++;
-		    	}
-		    	
-		        count++;
-		        if(count % 500_000 == 0)
-		        	System.out.println("processed: " + count);
+		        if(totalLines % 500_000 == 0)
+		        	System.out.println("Split Event-Realted vs. No-Event-Related: " + totalLines + " lines. " + clustersCount + " clusters. yes: " + yesEventCount + ", no: " + (clustersCount-yesEventCount));
+		        
+		        if(totalLines % LIMIT == 0)
+		       		break;
 		        
 		    }
 		    
-		    
+			if(printCluster(yout, nout, cluster, currentTopic))
+        	{
+				clustersCount++;
+				if(currentTopic!=null && !currentTopic.isEmpty())
+					yesEventCount++;
+        	}
+			
 		    br.close();
-		    out.close();
-		    System.out.println("count lines: " + count + " , lines related to a topic: " + clustersCount );
+		    yout.close();
+		    nout.close();
+		    //allout.close();
+        	System.out.println("Split Event-Realted vs. No-Event-Related: " + totalLines + " lines. yes: " + clustersCount + ", no: " + (clustersCount-yesEventCount));
 		    
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -303,6 +346,40 @@ public class EnrichPositiveLabeledDataset {
 	}
 	
 	
+	private static boolean printCluster(PrintStream yout, PrintStream nout, ArrayList<String[]> cluster, String currentTopic) {
+		if(cluster.size() == 0)
+			return false;
+		
+		PrintStream out;
+		if(currentTopic != null)
+    		out = yout;
+    	else
+    		out = nout;
+    	
+		for(String[] values : cluster)
+		{
+	        StringBuilder sb = new StringBuilder();
+	        sb.append( values[0] ).append( "\t" );
+	        sb.append( values[1] ).append( "\t" );
+	        sb.append( values[3] ).append( "\t" );
+	        sb.append( values[5] ).append( "\t" );
+	        sb.append( values[6] ).append( "\t" );
+	        sb.append( values[7] ).append( "\t" );
+	        sb.append( values[8] ).append( "\t" );
+	        sb.append( values[9] ).append( "\t" );
+	        sb.append( currentTopic == null ? "" : currentTopic).append( "\t" );
+	        sb.append( values[12] ).append( "\n" );
+	        
+	        String s = sb.toString();
+			
+			out.print(s);
+		}
+		
+		return true;
+	}
+
+
+
 	private static void step1_2_LoadLabeled(String inputfile, Hashtable<String, String> labeled) throws IOException
 	{
 		FileInputStream stream = new FileInputStream(inputfile);
@@ -316,19 +393,22 @@ public class EnrichPositiveLabeledDataset {
 		int skip = 0;
 		while(line != null)
         {
-			String[] values = line.split("\t");
-			String id = values[0];
-			String topic = values[1];
-			
-			count ++;
-			
-			if(!labeled.contains(id))
-				labeled.put(id, topic);
-						
-			if(count % 1000 == 0)
-				System.out.println("Loaded " + count);
-			
+			if(!line.isEmpty())
+			{
+				String[] values = line.split("\t");
+				String id = values[0];
+				String topic = values[1];
+				
+				count ++;
+				
+				if(!labeled.contains(id))
+					labeled.put(id, topic);
+							
+				if(count % 1000 == 0)
+					System.out.println("Loaded " + count);
+			}
 			line=buffered.readLine();
+			line = line==null ? null : line.trim();
         }
 		
 		buffered.close();
