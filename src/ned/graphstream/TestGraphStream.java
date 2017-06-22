@@ -55,6 +55,7 @@ public class TestGraphStream {
 //				e.printStackTrace();
 //			}
 		}
+
 		ConnectedComponents cc = new ConnectedComponents();
         cc.init(graph);
         
