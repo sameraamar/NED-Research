@@ -12,17 +12,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
-import org.jgrapht.Graph;
-//import org.jgrapht.Graph;
-import org.jgrapht.ext.GraphExporter;
-import org.jgrapht.ext.GraphMLExporter;
-import org.jgrapht.ext.VisioExporter;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import ned.main.ExecutorMonitorThread;
 import ned.types.Document;
 import ned.types.Entry;
@@ -53,25 +44,7 @@ public class IdentifyInteractionGraph {
 			id2group = new RedisBasedMap<String, Entry>("mapper.id2group", true, false, true, new SerializeHelperAdapter<Entry>());
 			doMain();
 			dumpGroups(folder+"/id2group_"+suffex+"_" + VERSION + ".txt");
-
-		    Graph<String, DefaultEdge> g = null; 
-		    if(false)
-		    	g = new DefaultDirectedGraph<>(DefaultEdge.class);
-						
-			if(g != null)
-			{
-				String txt = g.toString();
-				//System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() + ": " + txt);
-				System.out.println(g.vertexSet().size() + ", " + g.edgeSet().size() );
-			
-			
-				GraphExporter<String, DefaultEdge> ge = new GraphMLExporter<String, DefaultEdge>();
-			
-				PrintStream graphOutput = new PrintStream(folder+"/graph.html");
-				ge.exportGraph(g, graphOutput);
-				//System.out.println( g.edgeSet().toString() );	
-			}
-						
+		    
 			System.out.println("Finished in " + (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-base)/1000.0) + " seconds.");
 						
 		} catch(Exception e) {

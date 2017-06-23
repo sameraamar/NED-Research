@@ -3,10 +3,6 @@ package ned.tools;
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
-
 import ned.types.Entry;
 import ned.types.RedisBasedMap;
 
