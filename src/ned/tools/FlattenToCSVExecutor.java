@@ -23,7 +23,7 @@ public class FlattenToCSVExecutor extends ProcessorExecutor {
 		this.counter = new AtomicInteger(0);
 		this.id2group = id2group;
 		this.positive = positive;
-		outFull.print( "id,userId,created_at,timestamp,retweets,likes,parent,parentUserId,parentType,root,depth,time-lag,topic_id,is_topic\n" );
+		outFull.print( "id,userId,created_at,timestamp,retweets,likes,parent,parentUserId,parentType,root,depth,time-lag,topic_id,is_topic,text\n" );
 		outShort.print( "id,root,topic_id,is_topic\n" );
 	}
 	

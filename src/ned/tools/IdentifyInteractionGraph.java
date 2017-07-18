@@ -20,7 +20,8 @@ import ned.types.Entry;
 import ned.types.GlobalData;
 import ned.types.RedisBasedMap;
 import ned.types.SerializeHelper;
-import ned.types.SerializeHelperAdapter;
+import ned.types.SerializeHelperAdapterDirtyBit;
+import ned.types.SerializeHelperAdapterSimpleType;
 import ned.types.Session;
 import ned.types.Utility;
 
@@ -29,6 +30,7 @@ public class IdentifyInteractionGraph {
 	public static int processed;
 	//private static Hashtable<String, Integer> positive;
 	public static RedisBasedMap<String, Entry> id2group;
+	public static RedisBasedMap<String, String> id2root;
 	private static ArrayList<String> ids;
 	
 	public static void main(String[] args) throws IOException
@@ -41,9 +43,10 @@ public class IdentifyInteractionGraph {
 			//String csvfilename = folder+"/dataset_"+suffex+"_" + VERSION + ".txt";
 
 			//id2group = new Hashtable<String, Entry>(); // HashtableRedis<Entry>("mapper.id2group", Entry.class);
-			id2group = new RedisBasedMap<String, Entry>("mapper.id2group", true, false, true, new SerializeHelperAdapter<Entry>());
+			id2group = new RedisBasedMap<String, Entry>("mapper.id2group", true, false, true, new SerializeHelperAdapterDirtyBit<Entry>());
+			id2root = new RedisBasedMap<String, String>("mapper.id2root", true, false, true, new SerializeHelperAdapterSimpleType<String>(String.class));
 			doMain();
-			dumpGroups(folder+"/id2group_"+suffex+"_" + VERSION + ".txt");
+			dumpGroups(folder+"/id2group_"+suffex+"_" + VERSION + "_bb.txt");
 		    
 			System.out.println("Finished in " + (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-base)/1000.0) + " seconds.");
 						
@@ -185,24 +188,45 @@ public class IdentifyInteractionGraph {
 					String rtwt = doc.getRetweetedId();
 					String qte = doc.getQuotedStatusId();
 					
-					if(rply == null && rtwt == null && qte == null)
+					String parentId = null, parentType = "";
+					
+					if(rply != null)
 					{
-						Entry e = new Entry(doc.getId(), doc.getTimestamp(), 0);
-						id2group.put(doc.getId(), e);
+						parentId = rply;
+						parentType = "rply";
 					}
-					else if(rply != null || rtwt != null || qte != null)
+					else if(rtwt != null)
 					{
-						String myLeadId = rtwt!=null ? rtwt : rply;
-						myLeadId = myLeadId == null ? qte : myLeadId;
+						parentId = rtwt;
+						parentType = "rtwt";
+					}
+					else if(qte != null)
+					{
+						parentId = qte;
+						parentType = "qte";
+					}
 						
-						Entry leadE = id2group.get(myLeadId);
-						if (leadE == null)
+					
+					if(parentId == null)
+					{
+						Entry e = new Entry(doc.getId(), "", doc.getTimestamp(), 0);
+						id2group.put(doc.getId(), e);
+						id2root.put(doc.getId(), doc.getId());
+					}
+					else if(parentId != null)
+					{	
+						Entry leadE = id2group.get(parentId);
+						if (leadE == null) //86370333774462976
 						{
-							leadE = new Entry(myLeadId, doc.getTimestamp(), 0);
-							id2group.put(myLeadId, leadE);
+							leadE = new Entry(parentId, "", 0, 0, 0);
+							id2group.put(parentId, leadE);
+							id2root.put(parentId, parentId);
 						}
 
-						Entry e = new Entry(leadE.getLeadId(), leadE.getFirstTimestamp(), leadE.getLevel()+1);
+						String tmp = id2root.get(parentId);
+						id2root.put(doc.getId(), tmp);
+						long firstTimeStamp = id2group.get(tmp).getTimestamp();
+						Entry e = new Entry(parentId, parentType, firstTimeStamp, doc.getTimestamp(), leadE.getLevel()+1);
 						id2group.put(doc.getId(), e);
 					}
 					
@@ -261,18 +285,30 @@ public class IdentifyInteractionGraph {
 		System.out.println("Writing groups to file: " + filename);
 		PrintStream groupsOut = new PrintStream(filename);
 		
-		groupsOut.println("id,leadId,depth");
-		for (int i=0; i<ids.size(); i++)
+		System.out.println("there are " + ids.size() + " ids to plot");
+		
+		groupsOut.println("id,parentId,parenttype,depth,root_id,timestamp,time_delta");
+		int size = ids.size();
+		for (int i=0; i<size; i++)
 		{
-			Entry e = id2group.get(ids.get(i));
+			String currentId = ids.get(i);
+			Entry e = id2group.get(currentId);
 			
-			String leadId = e.getLeadId();
+			String parentId = e.getParentId();
 			StringBuffer sb = new StringBuffer();
-			sb.append(ids.get(i));
+			sb.append(currentId);
 			sb.append(",");
-			sb.append(leadId);
+			sb.append(parentId);
+			sb.append(",");
+			sb.append(e.getParentType());
 			sb.append(",");
 			sb.append(e.getLevel());
+			sb.append(",");
+			sb.append(id2root.get(currentId));
+			sb.append(",");
+			sb.append(e.getTimestamp());
+			sb.append(",");
+			sb.append(e.getTimeDelta());
 
 			groupsOut.println(sb.toString());
 		}

@@ -21,7 +21,7 @@ import ned.types.Document;
 import ned.types.Entry;
 import ned.types.GlobalData;
 import ned.types.RedisBasedMap;
-import ned.types.SerializeHelperAdapter;
+import ned.types.SerializeHelperAdapterDirtyBit;
 import ned.types.Session;
 import ned.types.Utility;
 
@@ -53,7 +53,7 @@ public class FlattenDatasetMain {
 			System.out.println("output to " + csvFull);
 			PrintStream shortOut = new PrintStream(new FileOutputStream(csvShort));
 			PrintStream fullOut = new PrintStream(new FileOutputStream(csvFull));
-			id2group = new RedisBasedMap<String, Entry>("mapper.id2group", false, false, true, new SerializeHelperAdapter<Entry>());
+			id2group = new RedisBasedMap<String, Entry>("mapper.id2group", false, false, true, new SerializeHelperAdapterDirtyBit<Entry>());
 
 			mapper = new FlattenToCSVExecutor(fullOut, shortOut, id2group, positive, GlobalData.getInstance().getParams().number_of_threads);
 			ExecutorMonitorThread monitor = new FlattenDatasetMonitor(mapper.getExecutor(), 2);

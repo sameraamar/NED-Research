@@ -8,14 +8,27 @@ public class Entry implements Serializable, DirtyBit {
 	 */
 	private static final long serialVersionUID = 6575245165701295855L;
 	private String leadId;
+	private String parentType;
 	private int level;
-	private long firstTimestamp;
+	private long timestamp;
+	private long time_delta;
 	transient boolean dirty;
 	
-	public Entry(String leadId, long firstTimestamp, int level)
+	public Entry(String parentId, String parentType, long timestamp, int level)
 	{
-		this.leadId = leadId;
-		this.firstTimestamp = firstTimestamp;
+		this.leadId = parentId;
+		this.parentType = parentType;
+		this.timestamp = timestamp;
+		this.time_delta = 0;
+		this.level = level;
+		dirtyOn();
+	}
+
+	public Entry(String parentId, String parentType, long firstTimestamp, long thisTimeStamp, int level) {
+		this.leadId = parentId;
+		this.parentType = parentType;
+		this.timestamp = thisTimeStamp;
+		this.time_delta = thisTimeStamp-firstTimestamp;
 		this.level = level;
 		dirtyOn();
 	}
@@ -35,27 +48,26 @@ public class Entry implements Serializable, DirtyBit {
 		dirty = true;
 	}
 
-	public String getLeadId() {
+	public String getParentId() {
 		return leadId;
 	}
 
-	//public void setLeadId(String leadId) {
-	//	this.leadId = leadId;
-	//}
+	public long getTimeDelta()
+	{
+		return time_delta;
+	}
+
 
 	public int getLevel() {
 		return level;
 	}
 
-	//public void setLevel(int level) {
-	//	this.level = level;
-	//}
-
-	public long getFirstTimestamp() {
-		return firstTimestamp;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
-	//public void setFirstTimestamp(long firstTimestamp) {
-	//	this.firstTimestamp = firstTimestamp;
-	//}
+	public String getParentType() {
+		return parentType;
+	}
+
 }

@@ -1,9 +1,14 @@
 package ned.tools;
 
 import java.io.PrintStream;
+import java.net.URLDecoder;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.swing.text.html.HTML;
+
+import com.javacodegeeks.examples.Util;
+import com.mysql.jdbc.StringUtils;
 import ned.types.Document;
 import ned.types.Entry;
 import ned.types.RedisBasedMap;
@@ -115,6 +120,9 @@ public class FlattenToCSVWorker extends ProcessorWorker
 			parentType = "3";
 		}
 		
+		if(parent != null && parent.equals("102976907653558272"))
+			parent = parent;
+		
 		sb.append(parent).append(",");
 		sb.append(parentUser).append(",");
 		sb.append(parentType).append(",");
@@ -126,11 +134,10 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		long timeLag = -1;
 		if(entry != null)
 		{
-			root = PREFIX + entry.getLeadId();
+			root = PREFIX + entry.getParentId();
 			level = entry.getLevel();
-			//Document rootDoc = GlobalData.getInstance().getDocumentFromRedis("id2doc_parser", entry.leadId);
-			timeLag = -1;
-			timeLag = timestamp - entry.getFirstTimestamp();
+
+			timeLag = entry.getTimeDelta();
 		}
 
 		sb.append(root).append(",");
@@ -141,6 +148,7 @@ public class FlattenToCSVWorker extends ProcessorWorker
 			topicId = "";
 		sb.append(topicId).append(",");
 		sb.append(topicId.equals("") ? "no" : "yes");
+		sb.append(",").append( cleanText(doc.getText()) );
 		sb.append("\n");
 		
 		outFull.print(sb.toString());
@@ -151,10 +159,21 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb.append(root).append(",");
 		sb.append(topicId).append(",");
 		sb.append(topicId.equals("") ? "no" : "yes");
+		//sb.append(",").append( cleanText(doc.getText()) );
 		sb.append("\n");
 		
 		outShort.print(sb.toString());
     }
+
+	private Object cleanText(String text) {
+		text = Util.unescapeHTML(text) ;
+		text = text.replaceAll("\\P{Print}", "");
+		text = text.replace(',', ' ').replace('\'', ' ').replace('\\', ' ');
+		text = text.replace('"', ' ').replace('\r', ' ').replace('\n', ' ');
+		text = text.replace(',', ' ');
+		return text;
+	}
+
 
 	private String handleNull(String value) 
 	{
