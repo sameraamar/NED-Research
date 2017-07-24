@@ -55,7 +55,7 @@ time_delta bigint(20)
 CREATE INDEX id2tree_idx
 ON `thesis_2017`.`id2tree` (root_id, tweet_id);
 
-LOAD DATA LOCAL INFILE 'C:\\data\\Thesis\\threads_petrovic_all\\analysis_3m\\id2group_30m_V1.txt' 
+LOAD DATA LOCAL INFILE 'c:/data/Thesis/threads_petrovic_all/analysis_3m/id2group_30m_V1.txt' 
 INTO TABLE `thesis_2017`.`id2tree`
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n' 
