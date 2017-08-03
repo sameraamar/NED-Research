@@ -1,3 +1,5 @@
+from Cross_Validation import Cross_Validation as cv
+
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
@@ -10,14 +12,16 @@ import scipy.stats as stats
 import matplotlib.mlab as mlab
 
 from sklearn.neighbors import KNeighborsClassifier
+#from sklearn.neighbors import MultinomialNB
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
+from sklearn.model_selection import KFold
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
+from sklearn.utils import shuffle
 
 # from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
@@ -207,7 +211,7 @@ def machine_learn(data, id_field_name, y_field_name, sample_size=-1):
         if sample_size < len(data2):
             data2 = data2.sample(sample_size) #.head(sample_size)
 
-    visualize(data1, data2)
+    #visualize(data1, data2)
 
 
 
@@ -223,6 +227,7 @@ def machine_learn(data, id_field_name, y_field_name, sample_size=-1):
 
     classifiers = [
         KNeighborsClassifier(3),
+        #MultinomialNB(alpha=.0001),
         SVC(kernel="linear", C=0.025),
         SVC(gamma=2, C=1),
         DecisionTreeClassifier(max_depth=5),
@@ -231,18 +236,17 @@ def machine_learn(data, id_field_name, y_field_name, sample_size=-1):
         GaussianNB(),
         LinearDiscriminantAnalysis()]
     # QuadraticDiscriminantAnalysis()]
-    names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
+    names = ["Nearest Neighbors", #"MultinomialNB",
+             "Linear SVM", "RBF SVM", "Decision Tree",
              "Random Forest", "AdaBoost", "Naive Bayes",
              "Linear Discriminant Analysis"]
     # "Quadratic Discriminant Analysis"]
 
     for name, clf in zip(names, classifiers):
         print ('*********  ', name, ' **********')
+        xdata, ydata = shuffle(x, y, random_state=0)
+        score = cv.Cross_Validation(clf, 10, xdata, ydata)
 
-        clf.fit(x_train, y_train)
-        # z_test = clf.predict(x_test)
-
-        score = clf.score(x_test, y_test)
         print('Score using ', name, ': ', score)
 
         #z_predict = clf.predict(x_predict)
@@ -262,18 +266,21 @@ if __name__ == "__main__":
     print('*' * 20)
     print('Tree features')
 
-    data = pd.read_csv(folder + 'tree_tweet_features.csv', sep=',', index_col=0)
-    run_feature_analysis(data,
-                         ["Depth"],
-                         ['depth'],
-                         is_event_field='is_tweet_event') #, sample_size=20000000)
+    #data = pd.read_csv(folder + 'tree_tweet_features.csv', sep=',', index_col=0)
+    #run_feature_analysis(data,
+    #                     ["Depth"],
+    #                     ['depth'],
+    #                     is_event_field='is_tweet_event') #, sample_size=20000000)
 
 
     data = pd.read_csv(folder + 'tree_features.csv', sep=',', index_col=0)
-    run_feature_analysis(data,
-                         ["Tree Size", "retweet count", 'likes average', 'Retweet Average'],
-                         ['tree_size', 'rtwt_count', 'likes_avg', 'retweets_avg'],
-                         is_event_field='is_tree_event', sample_size=1000)
+
+    if False:
+        run_feature_analysis(data,
+                             ["Tree Size", "retweet count", 'likes average', 'Retweet Average'],
+                             ['tree_size', 'rtwt_count', 'likes_avg', 'retweets_avg'],
+                             is_event_field='is_tree_event', sample_size=1000)
+
     print('Machine learning...')
     machine_learn(data, 'root_id', 'is_tree_event', 1000)
 

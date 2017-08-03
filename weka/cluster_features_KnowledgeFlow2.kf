@@ -1,0 +1,152 @@
+{
+	"flow_name" : "tree_features-KnowledgeFlow2",
+	"steps" : [
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.ClassAssigner",
+					"options" : "-C last"
+				},
+				"name" : "ClassAssigner"
+			},
+			"connections" : {
+				"dataSet" : [
+					"SMOTE2"
+				]
+			},
+			"coordinates" : "502,253"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.NumericToNominal",
+					"options" : "-R last-last"
+				},
+				"name" : "NumericToNominal"
+			},
+			"connections" : {
+				"dataSet" : [
+					"ClassAssigner"
+				]
+			},
+			"coordinates" : "252,447"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Loader",
+			"properties" : {
+				"loader" : {
+					"type" : "loader",
+					"class" : "weka.core.converters.CSVLoader",
+					"filePath" : "C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/cluster_features.csv",
+					"useRelativePath" : false,
+					"options" : "-M ? -B 100 -E \"\\\",\\'\" -F ,"
+				},
+				"name" : "Features (CSV)"
+			},
+			"connections" : {
+				"dataSet" : [
+					"remove root_id"
+				]
+			},
+			"coordinates" : "119,138"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Saver",
+			"properties" : {
+				"name" : "LibSVMSaver",
+				"relationNameForFilename" : true,
+				"saver" : {
+					"type" : "saver",
+					"class" : "weka.core.converters.LibSVMSaver",
+					"filePath" : "",
+					"dir" : "C:/ProgramData/MySQL/MySQL Server 5.6/Uploads",
+					"prefix" : "smote",
+					"useRelativePath" : false,
+					"options" : "-c last"
+				}
+			},
+			"connections" : {
+			},
+			"coordinates" : "1331,267"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.RemoveByName",
+					"options" : "-E ^root_id$"
+				},
+				"name" : "remove root_id"
+			},
+			"connections" : {
+				"dataSet" : [
+					"NumericToNominal"
+				]
+			},
+			"coordinates" : "119,317"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.supervised.instance.SMOTE",
+					"options" : "-C 0 -K 5 -P 1000000.0 -S 1"
+				},
+				"name" : "SMOTE2"
+			},
+			"connections" : {
+				"dataSet" : [
+					"RemovePercentage"
+				]
+			},
+			"coordinates" : "910,313"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note",
+				"noteText" : "New note"
+			},
+			"connections" : {
+			},
+			"coordinates" : "284,141"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.instance.RemovePercentage",
+					"options" : "-P 50.0"
+				},
+				"name" : "RemovePercentage"
+			},
+			"connections" : {
+				"dataSet" : [
+					"LibSVMSaver"
+				]
+			},
+			"coordinates" : "1107,375"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.instance.Randomize",
+					"options" : "-S 42"
+				},
+				"name" : "Randomize"
+			},
+			"connections" : {
+			},
+			"coordinates" : "965,428"
+		}
+	]
+}

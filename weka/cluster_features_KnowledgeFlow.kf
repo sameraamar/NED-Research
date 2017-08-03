@@ -1,0 +1,114 @@
+{
+	"flow_name" : "tree_features-KnowledgeFlow",
+	"steps" : [
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.ClassAssigner",
+					"options" : "-C last"
+				},
+				"name" : "ClassAssigner"
+			},
+			"connections" : {
+				"dataSet" : [
+					"SMOTE"
+				]
+			},
+			"coordinates" : "527,57"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.NumericToNominal",
+					"options" : "-R last-last"
+				},
+				"name" : "NumericToNominal"
+			},
+			"connections" : {
+				"dataSet" : [
+					"ClassAssigner"
+				]
+			},
+			"coordinates" : "392,57"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.supervised.instance.SMOTE",
+					"options" : "-C 1 -K 5 -P 200.0 -S 1"
+				},
+				"name" : "SMOTE"
+			},
+			"connections" : {
+				"dataSet" : [
+					"LibSVMSaver",
+					"CSVSaver"
+				]
+			},
+			"coordinates" : "528,190"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Loader",
+			"properties" : {
+				"loader" : {
+					"type" : "loader",
+					"class" : "weka.core.converters.CSVLoader",
+					"filePath" : "C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/tree_features_sample_100k.csv",
+					"useRelativePath" : false,
+					"options" : "-M ? -B 100 -E \"\\\",\\'\" -F ,"
+				},
+				"name" : "Features (CSV)"
+			},
+			"connections" : {
+				"dataSet" : [
+					"NumericToNominal"
+				]
+			},
+			"coordinates" : "212,91"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Saver",
+			"properties" : {
+				"name" : "LibSVMSaver",
+				"relationNameForFilename" : true,
+				"saver" : {
+					"type" : "saver",
+					"class" : "weka.core.converters.LibSVMSaver",
+					"filePath" : "",
+					"dir" : "C:/ProgramData/MySQL/MySQL Server 5.6/Uploads",
+					"prefix" : "smote",
+					"useRelativePath" : false,
+					"options" : "-c last"
+				}
+			},
+			"connections" : {
+			},
+			"coordinates" : "706,127"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Saver",
+			"properties" : {
+				"name" : "CSVSaver",
+				"relationNameForFilename" : true,
+				"saver" : {
+					"type" : "saver",
+					"class" : "weka.core.converters.CSVSaver",
+					"filePath" : "",
+					"dir" : "C:/ProgramData/MySQL/MySQL Server 5.6/Uploads",
+					"prefix" : "smote_csv",
+					"useRelativePath" : false,
+					"options" : "-F , -M ? -decimal 6"
+				}
+			},
+			"connections" : {
+			},
+			"coordinates" : "487,330"
+		}
+	]
+}

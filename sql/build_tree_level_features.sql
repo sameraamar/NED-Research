@@ -22,7 +22,7 @@ CREATE TABLE thesis_analysis.tree_features01 AS SELECT c.root_id,
     SUM(IF(parentType = 'rply', 1, 0)) AS rply_count,
     SUM(IF(parentType = 'qte', 1, 0)) AS qwt_only_count,
     SUM(IF(parentType = '', 1, 0)) AS original_count,
-    IF(SUM(is_tweet_event) > 0, 1, 0) AS is_tree_event ,
+    IF(SUM(is_tweet_event) > 0, 1, 0) AS is_event ,
     AVG(likes) AS likes_avg,
     AVG(retweets) AS retweets_avg
     FROM
@@ -41,7 +41,7 @@ CREATE TABLE thesis_analysis.tree_features02 AS (SELECT 'tweet_id',
     'likes', 
     'retweets', 
     'user',
-    'is_tweet_event') UNION (SELECT 
+    'is_event') UNION (SELECT 
     tweet_id,
     parent,
     parentType,
@@ -74,7 +74,7 @@ CREATE TABLE thesis_analysis.tree_features03 AS (SELECT 'root_id',
     'qwt_only_count',
     'likes_avg',
     'retweets_avg',
-    'is_tree_event') UNION (SELECT 
+    'is_event') UNION (SELECT 
     root_id,
     tree_size,
     original_count,
@@ -84,7 +84,7 @@ CREATE TABLE thesis_analysis.tree_features03 AS (SELECT 'root_id',
     qwt_only_count,
     likes_avg,
     retweets_avg,
-    is_tree_event
+    is_event
 FROM
     thesis_analysis.tree_features01);
 
@@ -93,6 +93,5 @@ FROM
 SELECT 
     *
 FROM
-    thesis_analysis.tree_features03 INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/tree_features.csv' FIELDS TERMINATED BY ',' LINES TERMINATED BY '
-';
+    thesis_analysis.tree_features03 INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/tree_features.csv' FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 
