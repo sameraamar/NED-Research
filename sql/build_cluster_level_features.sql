@@ -174,23 +174,31 @@ FROM
     thesis_2017.tweet2topic tt ON c.lead_Id = tt.tweet_id; 
 
 
-CREATE TABLE thesis_analysis.clusters_features03 AS
-(SELECT 'lead_id', 'entropy', 'users', 'size', 'users_to_size', 
-	'time_avg', 'time_stdv', 'time_v', 'time_max', 'time_geometric_mean',
-	'event_unknown', 'event_yes', 'event_no', 'leader_topic_id')
-UNION
-(SELECT lead_id, entropy, users, size, users_to_size, 
-		time_avg, time_stdv, time_v, time_max, time_geometric_mean,
-		event_unknown, event_yes, event_no, leader_topic_id
-FROM    thesis_analysis.clusters_features02  );
 
-ALTER TABLE `thesis_analysis`.`clusters_features03` 
-ADD PRIMARY KEY (`lead_Id`);
+#CREATE TABLE thesis_analysis.clusters_features03 AS
+#(SELECT 'lead_id', 'entropy', 'users', 'size', 'users_to_size', 
+#	'time_avg', 'time_stdv', 'time_v', 'time_max', 'time_geometric_mean',
+#	'event_unknown', 'event_yes', 'event_no', 'leader_topic_id')
+#UNION
+#(SELECT lead_id, entropy, users, size, users_to_size, 
+#		time_avg, time_stdv, time_v, time_max, time_geometric_mean,
+#		event_unknown, event_yes, event_no, leader_topic_id
+#FROM    thesis_analysis.clusters_features02  );
+
+#ALTER TABLE `thesis_analysis`.`clusters_features03` 
+#ADD PRIMARY KEY (`lead_Id`);
+
+SELECT 'lead_id', 'entropy', 'users', 'size', 'users_to_size', 
+	'time_avg', 'time_stdv', 'time_v', 'time_max', 'time_geometric_mean',
+	'event_unknown', 'event_yes', 'event_no', 'leader_topic_id'
+    INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/cluster_features2-header.csv' 
+    FIELDS TERMINATED BY ',' 
+    LINES TERMINATED BY '\n';
 
 SELECT 
     *
     FROM
-    thesis_analysis.clusters_features03 
+    thesis_analysis.clusters_features02
     INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/cluster_features2.csv' 
     FIELDS TERMINATED BY ',' 
     LINES TERMINATED BY '\n';
@@ -198,7 +206,7 @@ SELECT
 SELECT 
     *
     FROM
-    thesis_analysis.clusters_features03 
+    thesis_analysis.clusters_features02
     WHERE leader_topic_id is not null
     INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/cluster_features2_clean.csv' 
     FIELDS TERMINATED BY ',' 
@@ -208,16 +216,16 @@ SELECT
 DROP VIEW IF EXISTS thesis_analysis.candidate_labels;
 
 CREATE VIEW thesis_analysis.candidate_labels AS
-	(SELECT lead_id, 1000 as topic_id  FROM thesis_analysis.clusters_features03 
+	(SELECT lead_id, 1000 as topic_id  FROM thesis_analysis.clusters_features02 
 	where leader_topic_id is null and event_no=0 and event_yes/size > 0.5 ) 
 	union
-	(SELECT lead_id, -1 as topic_id FROM thesis_analysis.clusters_features03 
+	(SELECT lead_id, -1 as topic_id FROM thesis_analysis.clusters_features02 
 	where leader_topic_id is null and event_yes=0 and event_no/size > 0.5  ) 
 	union 
-	(SELECT lead_id, 1000 as topic_id  FROM thesis_analysis.clusters_features03 
+	(SELECT lead_id, 1000 as topic_id  FROM thesis_analysis.clusters_features02 
 	where leader_topic_id is null and event_no=0 and event_yes/size <= 0.5 and event_yes/event_unknown > 0.5 )
 	union
-	(SELECT lead_id, -1 as topic_id FROM thesis_analysis.clusters_features03 
+	(SELECT lead_id, -1 as topic_id FROM thesis_analysis.clusters_features02 
 	where leader_topic_id is null and event_yes=0 and event_no/size > 0.5 and event_no/event_unknown > 0.5  ) 
     ;
     
