@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="node_file" type="xstring" value="settings.xml"/>
+<config key="flow_stack">
+<config key="Variable_0">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="new variable"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value="Last*(size),Mean(entropy),Variance(entropy),Last*(users),timestamp_avg,class,quote_count,retweet_count,reply_count,quote_percent,retweet_percent,reply_percent,integral_ 1,integral_ 2,integral_ 3,integral_ 4,integral_ 5,integral_ 6,integral_ 7,integral_ 8,integral_ 9,integral_ 10,integral_ 11,integral_ 12,integral_ 13,integral_ 14,integral_ 15,integral_ 16,integral_ 17,integral_ 18,integral_ 19,integral_ 20,integral_ 21,integral_ 22,integral_ 23,integral_ 24,integral_ 25,integral_ 26,integral_ 27,integral_ 28,integral_ 29,integral_ 30,integral_ 31,integral_ 32,integral_ 33,integral_ 34,integral_ 35,integral_ 36,integral_ 37,integral_ 38,integral_ 39,integral_ 40,integral_ 41,integral_ 42,integral_ 43,integral_ 44,integral_ 45,integral_ 46,integral_ 47,integral_ 48,integral_ 49,integral_ 50,integral_ 51,integral_ 52,integral_ 53,integral_ 54,integral_ 55,integral_ 56,integral_ 57,integral_ 58,integral_ 59,integral_ 60,integral_ 61,integral_ 62,integral_ 63,integral_ 64,integral_ 65,integral_ 66,integral_ 67,integral_ 68,integral_ 69,integral_ 70,integral_ 71,integral_ 72,integral_ 73,integral_ 74,integral_ 75,integral_ 76,integral_ 77,integral_ 78,integral_ 79,integral_ 80,integral_ 81,integral_ 82,integral_ 83,integral_ 84,integral_ 85,integral_ 86,integral_ 87,integral_ 88,integral_ 89,integral_ 90,integral_ 91,integral_ 92,integral_ 93,integral_ 94,integral_ 95,integral_ 96,integral_ 97,integral_ 98,integral_ 99,integral_ 100,integral_ 101,integral_ 102,integral_ 103,integral_ 104,integral_ 105,integral_ 106,integral_ 107,integral_ 108,integral_ 109,integral_ 110,integral_ 111,integral_ 112,integral_ 113,integral_ 114,integral_ 115,integral_ 116,integral_ 117,integral_ 118,integral_ 119,integral_ 120,integral_ 121,integral_ 122,integral_ 123,integral_ 124,integral_ 125,integral_ 126,integral_ 127,integral_ 128,integral_ 129,integral_ 130,integral_ 131,integral_ 132,integral_ 133,integral_ 134,integral_ 135,integral_ 136,integral_ 137,integral_ 138,integral_ 139,integral_ 140,integral_ 141,integral_ 142,integral_ 143,integral_ 144,integral_ 145,integral_ 146,integral_ 147,integral_ 148,integral_ 149,integral_ 150,integral_ 151,integral_ 152,integral_ 153,integral_ 154,integral_ 155,integral_ 156,integral_ 157,integral_ 158,integral_ 159,integral_ 160,integral_ 161,integral_ 162,integral_ 163,integral_ 164,integral_ 165,integral_ 166,integral_ 167,integral_ 168,integral_ 169,integral_ 170,integral_ 171,integral_ 172,integral_ 173,integral_ 174,integral_ 175,integral_ 176,integral_ 177,integral_ 178,integral_ 179,integral_ 180,integral_ 181,integral_ 182,integral_ 183,integral_ 184,integral_ 185,integral_ 186,integral_ 187,integral_ 188,integral_ 189,integral_ 190,integral_ 191,integral_ 192,integral_ 193,integral_ 194,integral_ 195,integral_ 196,integral_ 197,integral_ 198,integral_ 199,integral_ 200,integral_ 201,integral_ 202,integral_ 203,integral_ 204,integral_ 205,integral_ 206,integral_ 207,integral_ 208,integral_ 209,integral_ 210,integral_ 211,integral_ 212,integral_ 213,integral_ 214,integral_ 215,integral_ 216,integral_ 217,integral_ 218,integral_ 219,integral_ 220,integral_ 221,integral_ 222,integral_ 223,integral_ 224,integral_ 225,integral_ 226,integral_ 227,integral_ 228,integral_ 229,integral_ 230,integral_ 231,integral_ 232,integral_ 233,integral_ 234,integral_ 235,integral_ 236,integral_ 237,integral_ 238,integral_ 239,integral_ 240,integral_ 241,integral_ 242,integral_ 243,integral_ 244,integral_ 245,integral_ 246,integral_ 247,integral_ 248,integral_ 249,integral_ 250,integral_ 251,integral_ 252,integral_ 253,integral_ 254,integral_ 255,integral_ 256,integral_ 257,integral_ 258,integral_ 259,integral_ 260,integral_ 261,integral_ 262,integral_ 263,integral_ 264,integral_ 265,integral_ 266,integral_ 267,integral_ 268,integral_ 269,integral_ 270,integral_ 271,integral_ 272,integral_ 273,integral_ 274,integral_ 275,integral_ 276,integral_ 277,integral_ 278,integral_ 279,integral_ 280,integral_ 281,integral_ 282,integral_ 283,integral_ 284,integral_ 285,integral_ 286,integral_ 287,integral_ 288,integral_ 289,integral_ 290,integral_ 291,integral_ 292,integral_ 293,integral_ 294,integral_ 295,integral_ 296,integral_ 297,integral_ 298,integral_ 299,integral_ 300,integral_ 301,integral_ 302,integral_ 303,integral_ 304,integral_ 305,integral_ 306,integral_ 307,integral_ 308,integral_ 309,integral_ 310,integral_ 311,integral_ 312,integral_ 313,integral_ 314,integral_ 315,integral_ 316,integral_ 317,integral_ 318,integral_ 319,integral_ 320,integral_ 321,integral_ 322,integral_ 323,integral_ 324,integral_ 325,integral_ 326,integral_ 327,integral_ 328,integral_ 329,integral_ 330,integral_ 331,integral_ 332,integral_ 333,integral_ 334,integral_ 335,integral_ 336,integral_ 337,integral_ 338,integral_ 339,integral_ 340,integral_ 341,integral_ 342,integral_ 343,integral_ 344,integral_ 345,integral_ 346,integral_ 347,integral_ 348,integral_ 349,integral_ 350,integral_ 351,integral_ 352,integral_ 353,integral_ 354,integral_ 355,integral_ 356,integral_ 357,integral_ 358,integral_ 359,bins_ 1,bins_ 2,bins_ 3,bins_ 4,bins_ 5,bins_ 6,bins_ 7,bins_ 8,bins_ 9,bins_ 10,bins_ 11,bins_ 12,bins_ 13,bins_ 14,bins_ 15,bins_ 16,bins_ 17,bins_ 18,bins_ 19,bins_ 20,bins_ 21,bins_ 22,bins_ 23,bins_ 24,bins_ 25,bins_ 26,bins_ 27,bins_ 28,bins_ 29,bins_ 30,bins_ 31,bins_ 32,bins_ 33,bins_ 34,bins_ 35,bins_ 36,bins_ 37,bins_ 38,bins_ 39,bins_ 40,bins_ 41,bins_ 42,bins_ 43,bins_ 44,bins_ 45,bins_ 46,bins_ 47,bins_ 48,bins_ 49,bins_ 50,bins_ 51,bins_ 52,bins_ 53,bins_ 54,bins_ 55,bins_ 56,bins_ 57,bins_ 58,bins_ 59,bins_ 60,bins_ 61,bins_ 62,bins_ 63,bins_ 64,bins_ 65,bins_ 66,bins_ 67,bins_ 68,bins_ 69,bins_ 70,bins_ 71,bins_ 72,bins_ 73,bins_ 74,bins_ 75,bins_ 76,bins_ 77,bins_ 78,bins_ 79,bins_ 80,bins_ 81,bins_ 82,bins_ 83,bins_ 84,bins_ 85,bins_ 86,bins_ 87,bins_ 88,bins_ 89,bins_ 90,bins_ 91,bins_ 92,bins_ 93,bins_ 94,bins_ 95,bins_ 96,bins_ 97,bins_ 98,bins_ 99,bins_ 100,bins_ 101,bins_ 102,bins_ 103,bins_ 104,bins_ 105,bins_ 106,bins_ 107,bins_ 108,bins_ 109,bins_ 110,bins_ 111,bins_ 112,bins_ 113,bins_ 114,bins_ 115,bins_ 116,bins_ 117,bins_ 118,bins_ 119,bins_ 120,bins_ 121,bins_ 122,bins_ 123,bins_ 124,bins_ 125,bins_ 126,bins_ 127,bins_ 128,bins_ 129,bins_ 130,bins_ 131,bins_ 132,bins_ 133,bins_ 134,bins_ 135,bins_ 136,bins_ 137,bins_ 138,bins_ 139,bins_ 140,bins_ 141,bins_ 142,bins_ 143,bins_ 144,bins_ 145,bins_ 146,bins_ 147,bins_ 148,bins_ 149,bins_ 150,bins_ 151,bins_ 152,bins_ 153,bins_ 154,bins_ 155,bins_ 156,bins_ 157,bins_ 158,bins_ 159,bins_ 160,bins_ 161,bins_ 162,bins_ 163,bins_ 164,bins_ 165,bins_ 166,bins_ 167,bins_ 168,bins_ 169,bins_ 170,bins_ 171,bins_ 172,bins_ 173,bins_ 174,bins_ 175,bins_ 176,bins_ 177,bins_ 178,bins_ 179,bins_ 180,bins_ 181,bins_ 182,bins_ 183,bins_ 184,bins_ 185,bins_ 186,bins_ 187,bins_ 188,bins_ 189,bins_ 190,bins_ 191,bins_ 192,bins_ 193,bins_ 194,bins_ 195,bins_ 196,bins_ 197,bins_ 198,bins_ 199,bins_ 200,bins_ 201,bins_ 202,bins_ 203,bins_ 204,bins_ 205,bins_ 206,bins_ 207,bins_ 208,bins_ 209,bins_ 210,bins_ 211,bins_ 212,bins_ 213,bins_ 214,bins_ 215,bins_ 216,bins_ 217,bins_ 218,bins_ 219,bins_ 220,bins_ 221,bins_ 222,bins_ 223,bins_ 224,bins_ 225,bins_ 226,bins_ 227,bins_ 228,bins_ 229,bins_ 230,bins_ 231,bins_ 232,bins_ 233,bins_ 234,bins_ 235,bins_ 236,bins_ 237,bins_ 238,bins_ 239,bins_ 240,bins_ 241,bins_ 242,bins_ 243,bins_ 244,bins_ 245,bins_ 246,bins_ 247,bins_ 248,bins_ 249,bins_ 250,bins_ 251,bins_ 252,bins_ 253,bins_ 254,bins_ 255,bins_ 256,bins_ 257,bins_ 258,bins_ 259,bins_ 260,bins_ 261,bins_ 262,bins_ 263,bins_ 264,bins_ 265,bins_ 266,bins_ 267,bins_ 268,bins_ 269,bins_ 270,bins_ 271,bins_ 272,bins_ 273,bins_ 274,bins_ 275,bins_ 276,bins_ 277,bins_ 278,bins_ 279,bins_ 280,bins_ 281,bins_ 282,bins_ 283,bins_ 284,bins_ 285,bins_ 286,bins_ 287,bins_ 288,bins_ 289,bins_ 290,bins_ 291,bins_ 292,bins_ 293,bins_ 294,bins_ 295,bins_ 296,bins_ 297,bins_ 298,bins_ 299,bins_ 300,bins_ 301,bins_ 302,bins_ 303,bins_ 304,bins_ 305,bins_ 306,bins_ 307,bins_ 308,bins_ 309,bins_ 310,bins_ 311,bins_ 312,bins_ 313,bins_ 314,bins_ 315,bins_ 316,bins_ 317,bins_ 318,bins_ 319,bins_ 320,bins_ 321,bins_ 322,bins_ 323,bins_ 324,bins_ 325,bins_ 326,bins_ 327,bins_ 328,bins_ 329,bins_ 330,bins_ 331,bins_ 332,bins_ 333,bins_ 334,bins_ 335,bins_ 336,bins_ 337,bins_ 338,bins_ 339,bins_ 340,bins_ 341,bins_ 342,bins_ 343,bins_ 344,bins_ 345,bins_ 346,bins_ 347,bins_ 348,bins_ 349,bins_ 350,bins_ 351,bins_ 352,bins_ 353,bins_ 354,bins_ 355,bins_ 356,bins_ 357,bins_ 358,bins_ 359,bins_ 360"/>
+</config>
+</config>
+<config key="internal_node_subsettings">
+<entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
+</config>
+<config key="model">
+<config key="defaultValue">
+<config key="columns">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<config key="columnFilter">
+<config key="columnFilter">
+<entry key="filter-type" type="xstring" value="STANDARD"/>
+<config key="included_names">
+<entry key="array-size" type="xint" value="5"/>
+<entry key="0" type="xstring" value="entropy"/>
+<entry key="1" type="xstring" value="users"/>
+<entry key="2" type="xstring" value="size"/>
+<entry key="3" type="xstring" value="avg_time"/>
+<entry key="4" type="xstring" value="class"/>
+</config>
+<config key="excluded_names">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<entry key="enforce_option" type="xstring" value="EnforceExclusion"/>
+<config key="name_pattern">
+<entry key="pattern" type="xstring" value=""/>
+<entry key="type" type="xstring" value="Wildcard"/>
+<entry key="caseSensitive" type="xboolean" value="true"/>
+</config>
+<config key="datatype">
+<config key="typelist">
+<entry key="org.knime.core.data.BooleanValue" type="xboolean" value="false"/>
+<entry key="org.knime.core.data.date.DateAndTimeValue" type="xboolean" value="false"/>
+<entry key="org.knime.core.data.DoubleValue" type="xboolean" value="false"/>
+<entry key="org.knime.core.data.IntValue" type="xboolean" value="false"/>
+<entry key="org.knime.core.data.LongValue" type="xboolean" value="false"/>
+<entry key="org.knime.core.data.StringValue" type="xboolean" value="false"/>
+</config>
+</config>
+</config>
+</config>
+</config>
+<entry key="label" type="xstring" value="Label"/>
+<entry key="description" type="xstring" value="Filter columns"/>
+<entry key="hideInWizard" type="xboolean" value="false"/>
+<entry key="hideInDialog" type="xboolean" value="false"/>
+<entry key="required" type="xboolean" value="true"/>
+<entry key="parameterName" type="xstring" value="column-filter"/>
+<entry key="flowvariablename" type="xstring" value="new variable"/>
+<config key="possibleColumns">
+<entry key="array-size" type="xint" value="5"/>
+<entry key="0" type="xstring" value="entropy"/>
+<entry key="1" type="xstring" value="users"/>
+<entry key="2" type="xstring" value="size"/>
+<entry key="3" type="xstring" value="avg_time"/>
+<entry key="4" type="xstring" value="class"/>
+</config>
+<entry key="type" type="xstring" value="Twinlist"/>
+<entry key="limit_number_visible_options" type="xboolean" value="false"/>
+<entry key="number_visible_options" type="xint" value="10"/>
+</config>
+<config key="nodeAnnotation">
+<entry key="text" type="xstring" value="what columns %%00013%%00010to take to learner?"/>
+<entry key="bgcolor" type="xint" value="16777215"/>
+<entry key="x-coordinate" type="xint" value="167"/>
+<entry key="y-coordinate" type="xint" value="379"/>
+<entry key="width" type="xint" value="106"/>
+<entry key="height" type="xint" value="30"/>
+<entry key="alignment" type="xstring" value="CENTER"/>
+<entry key="borderSize" type="xint" value="2"/>
+<entry key="borderColor" type="xint" value="16777215"/>
+<entry key="defFontSize" type="xint" value="9"/>
+<entry key="annotation-version" type="xint" value="20151123"/>
+<config key="styles"/>
+</config>
+<entry key="customDescription" type="xstring" isnull="true" value=""/>
+<entry key="state" type="xstring" value="CONFIGURED"/>
+<entry key="factory" type="xstring" value="org.knime.js.base.node.quickform.filter.column.ColumnFilterQuickFormNodeFactory"/>
+<entry key="node-name" type="xstring" value="Column Filter"/>
+<entry key="node-bundle-name" type="xstring" value="KNIME Quick Form Nodes"/>
+<entry key="node-bundle-symbolic-name" type="xstring" value="org.knime.js.quickforms"/>
+<entry key="node-bundle-vendor" type="xstring" value="KNIME.com, Zurich, Switzerland"/>
+<entry key="node-bundle-version" type="xstring" value="3.4.0.v201706120849"/>
+<entry key="node-feature-name" type="xstring" value="KNIME Quick Forms"/>
+<entry key="node-feature-symbolic-name" type="xstring" value="org.knime.features.js.quickforms.feature.group"/>
+<entry key="node-feature-vendor" type="xstring" value="KNIME.com, Zurich, Switzerland"/>
+<entry key="node-feature-version" type="xstring" value="3.4.0.v201707100844"/>
+<config key="factory_settings"/>
+<entry key="name" type="xstring" value="Column Filter"/>
+<entry key="hasContent" type="xboolean" value="false"/>
+<entry key="isInactive" type="xboolean" value="false"/>
+<config key="ports">
+<config key="port_1">
+<entry key="index" type="xint" value="1"/>
+<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+</config>
+</config>
+<config key="filestores">
+<entry key="file_store_location" type="xstring" isnull="true" value=""/>
+<entry key="file_store_id" type="xstring" isnull="true" value=""/>
+</config>
+</config>

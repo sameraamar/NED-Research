@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="node_file" type="xstring" value="settings.xml"/>
+<config key="flow_stack"/>
+<config key="internal_node_subsettings">
+<entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
+</config>
+<config key="model">
+<entry key="scriptImports" type="xstring" value="// Your custom imports:%%00010import com.fasterxml.jackson.databind.ObjectMapper;%%00010import com.fasterxml.jackson.databind.JsonNode;%%00010import java.util.Map;%%00010import java.util.HashMap;%%00010import com.fasterxml.jackson.core.type.TypeReference;%%00010import com.fasterxml.jackson.core.JsonParser;%%00010"/>
+<entry key="scriptFields" type="xstring" value="// Your custom variables:%%00010%%00009private boolean isMissing(Map&lt;String, Object&gt; map, String key)%%00010%%00009{%%00010%%00009%%00009return !map.containsKey(key) || map.get(key) == null;%%00010%%00009}%%00010%%00010%%00009private boolean isTrue(Map&lt;String, Object&gt; map, String key)%%00010%%00009{%%00010%%00009%%00009if(isMissing(map, key))%%00010%%00009%%00009%%00009return false;%%00010%%00010%%00009%%00009return (boolean)map.get(key);%%00010%%00009}%%00010%%00010%%00009private Object parseValue(Map&lt;String, Object&gt; map, String key)%%00010%%00009{%%00010%%00009%%00009try {%%00010%%00009%%00009%%00009return map.get(key); %%00010%%00009%%00009} %%00010%%00009%%00009catch (Exception e)%%00010%%00009%%00009{%%00010%%00009%%00009%%00009if(false)%%00010%%00009%%00009%%00009%%00009return e.toString();%%00010%%00009%%00009}%%00010%%00010%%00009%%00009return null;%%00010%%00009}%%00010"/>
+<entry key="scriptBody" type="xstring" value="// Enter your code here:%%00010%%00010%%00009out_error = null;%%00010%%00009%%00010%%00009try {%%00010%%00009%%00009ObjectMapper mapper = new ObjectMapper();%%00010%%00009%%00009mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);%%00010%%00009%%00009%%00010%%00009%%00009Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();%%00010%%00009%%00009%%00010%%00009%%00009// convert JSON string to Map%%00010%%00009%%00009map = mapper.readValue(c_line, new TypeReference&lt;Map&lt;String, Object&gt;&gt;(){});%%00010%%00009%%00009%%00010%%00009%%00009out_tweet_id = parseValue(map, &quot;id_str&quot;).toString();%%00010%%00009%%00009out_timestamp = ((Double)map.get(&quot;timestamp&quot;)).longValue();%%00010%%00009%%00009%%00010%%00009%%00009out_favorite_count = (Integer)parseValue(map, &quot;favorite_count&quot;);%%00010%%00009%%00009out_retweet_count = (Integer)parseValue(map, &quot;retweet_count&quot;);%%00010%%00009%%00009%%00010%%00009%%00009out_is_reply_status = isMissing(map, &quot;in_reply_to_status_id_str&quot;) ;%%00010%%00009%%00009out_is_retweet_status = !isMissing(map, &quot;retweeted_status&quot;);%%00010%%00009%%00009out_is_quote_status = !isTrue(map, &quot;is_quote_status&quot;);%%00010%%00010%%00009%%00009%%00010%%00009%%00009if(out_is_reply_status)%%00010%%00009%%00009{%%00010%%00009%%00009%%00009out_reply_to_status_id = &quot;something&quot;;%%00010%%00009%%00009%%00009out_reply_to_status_id = (String) parseValue(map, &quot;in_reply_to_status_id_str&quot;);%%00010%%00009%%00009%%00009out_reply_to_user_id = (String) parseValue(map, &quot;in_reply_to_user_id_str&quot;);%%00010%%00009%%00009}%%00010%%00009%%00009else%%00010%%00009%%00009%%00009out_reply_to_status_id = &quot;missing&quot;;%%00010%%00009%%00009%%00010%%00009%%00009if(out_is_retweet_status)%%00010%%00009%%00009{%%00010%%00009%%00009%%00009Map&lt;String, Object&gt; tmp = (Map&lt;String, Object&gt;)parseValue(map, &quot;retweeted_status&quot;);%%00010%%00010%%00009%%00009%%00009out_retweet_id = tmp.toString();%%00010%%00009%%00009%%00009%%00010%%00009%%00009%%00009out_retweet_user_id = (String) parseValue(tmp, &quot;retweet_user_id&quot;);%%00010%%00009%%00009%%00009out_retweet_id = (String) parseValue(tmp, &quot;retweet_id&quot;);%%00010%%00009%%00009}%%00010%%00010%%00009%%00009if(out_is_quote_status)%%00010%%00009%%00009{%%00010%%00009%%00009%%00009//out_out_qoute_id = %%00010%%00009%%00009%%00009//out_out_quote_user %%00009%%00010%%00009%%00009}%%00010%%00009%%00009%%00010%%00009%%00009if( !isMissing(map, &quot;user&quot;) )%%00010%%00009%%00009{%%00010%%00009%%00009%%00009Map&lt;String, Object&gt; tmp = (Map&lt;String, Object&gt;)parseValue(map, &quot;user&quot;);%%00010%%00009%%00009%%00009out_user_id = (String)parseValue(tmp, &quot;id_str&quot;);%%00009%%00010%%00009%%00009%%00009%%00009%%00010%%00009%%00009%%00009out_user_name = (String)parseValue(tmp, &quot;screen_name&quot;);%%00010%%00009%%00009}%%00010%%00010%%00009%%00009 %%00010%%00009%%00009%%00010%%00009%%00009%%00010%%00009} catch (Exception e) {%%00010%%00009%%00009out_error = e.toString();%%00010%%00009}%%00010 %%00010%%00010%%00010%%00010%%00010"/>
+<config key="jarFiles">
+<entry key="array-size" type="xint" value="3"/>
+<entry key="0" type="xstring" value="C:\data\Java\jackson\jackson-annotations-2.6.6.jar"/>
+<entry key="1" type="xstring" value="C:\data\Java\jackson\jackson-core-2.6.6.jar"/>
+<entry key="2" type="xstring" value="C:\data\Java\jackson\jackson-databind-2.6.6.jar"/>
+</config>
+<config key="outCols">
+<entry key="array-size" type="xint" value="16"/>
+<config key="0">
+<entry key="Name" type="xstring" value="error"/>
+<entry key="JavaName" type="xstring" value="out_error"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="1">
+<entry key="Name" type="xstring" value="tweet_id"/>
+<entry key="JavaName" type="xstring" value="out_tweet_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="2">
+<entry key="Name" type="xstring" value="user_id"/>
+<entry key="JavaName" type="xstring" value="out_user_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="3">
+<entry key="Name" type="xstring" value="user_name"/>
+<entry key="JavaName" type="xstring" value="out_user_name"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="4">
+<entry key="Name" type="xstring" value="timestamp"/>
+<entry key="JavaName" type="xstring" value="out_timestamp"/>
+<entry key="JavaType" type="xstring" value="java.lang.Long"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.LongCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.LongCell$LongCellFactory.create(class java.lang.Long)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="5">
+<entry key="Name" type="xstring" value="favorite_count"/>
+<entry key="JavaName" type="xstring" value="out_favorite_count"/>
+<entry key="JavaType" type="xstring" value="java.lang.Integer"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.IntCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.IntCell$IntCellFactory.create(class java.lang.Integer)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="6">
+<entry key="Name" type="xstring" value="retweet_user_id"/>
+<entry key="JavaName" type="xstring" value="out_retweet_user_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="7">
+<entry key="Name" type="xstring" value="retweet_id"/>
+<entry key="JavaName" type="xstring" value="out_retweet_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="8">
+<entry key="Name" type="xstring" value="retweet_count"/>
+<entry key="JavaName" type="xstring" value="out_retweet_count"/>
+<entry key="JavaType" type="xstring" value="java.lang.Integer"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.IntCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.IntCell$IntCellFactory.create(class java.lang.Integer)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="9">
+<entry key="Name" type="xstring" value="reply_to_user_id"/>
+<entry key="JavaName" type="xstring" value="out_reply_to_user_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="10">
+<entry key="Name" type="xstring" value="reply_to_status_id"/>
+<entry key="JavaName" type="xstring" value="out_reply_to_status_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="11">
+<entry key="Name" type="xstring" value="is_quote_status"/>
+<entry key="JavaName" type="xstring" value="out_is_quote_status"/>
+<entry key="JavaType" type="xstring" value="java.lang.Boolean"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.BooleanCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.BooleanCell$BooleanCellFactory.create(class java.lang.Boolean)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="12">
+<entry key="Name" type="xstring" value="is_retweet_status"/>
+<entry key="JavaName" type="xstring" value="out_is_retweet_status"/>
+<entry key="JavaType" type="xstring" value="java.lang.Boolean"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.BooleanCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.BooleanCell$BooleanCellFactory.create(class java.lang.Boolean)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="13">
+<entry key="Name" type="xstring" value="is_reply_status"/>
+<entry key="JavaName" type="xstring" value="out_is_reply_status"/>
+<entry key="JavaType" type="xstring" value="java.lang.Boolean"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.BooleanCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.BooleanCell$BooleanCellFactory.create(class java.lang.Boolean)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="14">
+<entry key="Name" type="xstring" value="out_qoute_id"/>
+<entry key="JavaName" type="xstring" value="out_out_qoute_id"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="15">
+<entry key="Name" type="xstring" value="out_quote_user"/>
+<entry key="JavaName" type="xstring" value="out_out_quote_user"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.def.StringCell$StringCellFactory.createCell(class java.lang.String)"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+</config>
+<config key="outVars">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<config key="inCols">
+<entry key="array-size" type="xint" value="1"/>
+<config key="0">
+<entry key="Name" type="xstring" value="line"/>
+<entry key="JavaName" type="xstring" value="c_line"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<config key="Type">
+<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
+<entry key="is_null" type="xboolean" value="false"/>
+</config>
+<entry key="ConverterFactory" type="xstring" value="org.knime.core.data.convert.java.SimpleDataCellToJavaConverterFactory(StringValue,class java.lang.String,String)"/>
+</config>
+</config>
+<config key="inVars">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<entry key="version" type="xstring" value="version 1.x"/>
+<entry key="templateUUID" type="xstring" isnull="true" value=""/>
+<entry key="runOnExecute" type="xboolean" value="false"/>
+</config>
+<entry key="customDescription" type="xstring" isnull="true" value=""/>
+<entry key="state" type="xstring" value="IDLE"/>
+<entry key="factory" type="xstring" value="org.knime.base.node.jsnippet.JavaSnippetNodeFactory"/>
+<entry key="node-name" type="xstring" value="Java Snippet"/>
+<entry key="node-bundle-name" type="xstring" value="KNIME Java Snippet Nodes"/>
+<entry key="node-bundle-symbolic-name" type="xstring" value="org.knime.jsnippets"/>
+<entry key="node-bundle-vendor" type="xstring" value="KNIME GmbH, Konstanz, Germany"/>
+<entry key="node-bundle-version" type="xstring" value="3.4.0.v201706141136"/>
+<entry key="node-feature-name" type="xstring" value="KNIME Core"/>
+<entry key="node-feature-symbolic-name" type="xstring" value="org.knime.features.base.feature.group"/>
+<entry key="node-feature-vendor" type="xstring" value="KNIME GmbH, Konstanz, Germany"/>
+<entry key="node-feature-version" type="xstring" value="3.4.0.v201707101013"/>
+<config key="factory_settings"/>
+<entry key="name" type="xstring" value="Java Snippet"/>
+<entry key="hasContent" type="xboolean" value="false"/>
+<entry key="isInactive" type="xboolean" value="false"/>
+<config key="ports">
+<config key="port_1">
+<entry key="index" type="xint" value="1"/>
+<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+</config>
+</config>
+<config key="filestores">
+<entry key="file_store_location" type="xstring" isnull="true" value=""/>
+<entry key="file_store_id" type="xstring" isnull="true" value=""/>
+</config>
+</config>

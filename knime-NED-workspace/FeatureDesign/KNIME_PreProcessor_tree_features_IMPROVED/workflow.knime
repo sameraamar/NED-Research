@@ -7,7 +7,7 @@
 <entry key="authored-by" type="xstring" value="t-samera"/>
 <entry key="authored-when" type="xstring" value="2017-07-31 17:41:22 +0300"/>
 <entry key="lastEdited-by" type="xstring" value="t-samera"/>
-<entry key="lastEdited-when" type="xstring" value="2017-08-24 06:43:57 +0300"/>
+<entry key="lastEdited-when" type="xstring" value="2017-08-24 06:45:23 +0300"/>
 </config>
 <entry key="customDescription" type="xstring" isnull="true" value=""/>
 <entry key="state" type="xstring" value="IDLE"/>
@@ -310,8 +310,8 @@
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="1084"/>
-<entry key="1" type="xint" value="157"/>
+<entry key="0" type="xint" value="124"/>
+<entry key="1" type="xint" value="177"/>
 <entry key="2" type="xint" value="110"/>
 <entry key="3" type="xint" value="78"/>
 </config>
