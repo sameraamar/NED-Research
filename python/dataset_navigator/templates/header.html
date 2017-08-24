@@ -1,0 +1,22 @@
+{% extends "header.html" %}
+{% block body %}
+<body class="body">
+	  <div class="container">
+		{% for d in data %}
+			<p>{{d}}</p>
+		{% endfor %}
+		<hr>
+		{% if data[1]|int > 10%}
+			<p>True!</p>
+		{% endif %}
+		<hr>
+		<p>{{data[2]|replace('good','FREAKIN AWESOME!')}}</p>
+		<hr>
+		{% for lang in data[3].split(',') %}
+			<p>{{lang}}</p>
+		{% endfor %}
+		<hr>
+		{{data[4]|safe}}
+	  </div>
+</body>
+{% endblock %}

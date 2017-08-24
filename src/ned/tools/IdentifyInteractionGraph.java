@@ -38,7 +38,7 @@ public class IdentifyInteractionGraph {
 		try {
 			
 			long base = System.nanoTime();
-			String suffex = "30m";
+			String suffex = "ALL";
 			String folder = "C:/data/Thesis/threads_petrovic_all/analysis_3m"; //petrovic_only"; mt_results
 			//String csvfilename = folder+"/dataset_"+suffex+"_" + VERSION + ".txt";
 

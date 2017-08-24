@@ -39,7 +39,7 @@ public class FlattenDatasetMain {
 		try {
 			
 			long base = System.nanoTime();
-			String suffex = "5m";
+			String suffex = "ALL";
 			String folder = "C://data/Thesis/threads_petrovic_all/"; 
 			String subfolder = "analysis_3m"; //petrovic_only"; mt_results
 			String csvFull = folder+"/"+subfolder+"/dataset_full_"+suffex+"_" + VERSION + ".txt";

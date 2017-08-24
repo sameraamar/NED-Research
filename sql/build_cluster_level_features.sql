@@ -47,10 +47,9 @@ CREATE TABLE `clusters_features01a` (
   `users` int(11) DEFAULT NULL,
   `starttime` int(11) DEFAULT NULL,
   `sum_timestamp` decimal(32,0) DEFAULT NULL,
-
-  `event_unknown` decimal(23,0) DEFAULT NULL,
-  `event_yes` decimal(23,0) DEFAULT NULL,
-  `event_no` decimal(23,0) DEFAULT NULL
+  `event_unknown` int DEFAULT NULL,
+  `event_yes` int DEFAULT NULL,
+  `event_no` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

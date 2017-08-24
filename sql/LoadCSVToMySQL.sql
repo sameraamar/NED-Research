@@ -47,7 +47,8 @@ parentType text  DEFAULT NULL,
 root_id bigint(20) DEFAULT NULL,
 depth int(11),
 `timestamp` bigint(20),
-time_delta bigint(20)
+time_delta bigint(20),
+tree_size int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -66,6 +67,53 @@ SET `parent` = nullif(@vparent,''),
     `timestamp` = nullif(@vtimestamp,''),
     `time_delta` = nullif(@vtime_delta,'');
 #(`tweet_id`, `user`, `created_at`, `timestamp`, `retweets`, `likes`, `parent`, `parent_User_Id`, `parentType`, `root_id`, `depth`, `time_lag_str`, topic_id, is_topic)
+
+
+DROP TABLE IF EXISTS thesis_analysis.id2tree_tmp2;
+
+CREATE TABLE `thesis_analysis`.`id2tree_tmp2` (
+root_id bigint(20)  PRIMARY KEY,
+tree_size int(10)  DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO thesis_analysis.id2tree_tmp2 
+SELECT c.root_id,
+    COUNT(c.tweet_id) AS tree_size
+FROM
+   `thesis_2017`.`id2tree` c
+GROUP BY c.root_id;
+
+
+UPDATE `thesis_2017`.`id2tree` i
+JOIN thesis_analysis.id2tree_tmp2 j ON j.root_id = i.root_id
+SET i.tree_size = j.tree_size;
+
+DROP TABLE IF EXISTS thesis_analysis.id2tree_tmp2;
+
+DROP VIEW IF EXISTS `thesis_2017`.`id2tree_vw`;
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `thesis_2017`.`id2tree_vw` AS
+    SELECT 
+        `t`.`tweet_id` AS `tweet_id`,
+        `t`.`tree_size` AS `tree_size`,
+        `d`.`user` AS `user`,
+        `d`.`created_at` AS `created_at`,
+        `d`.`retweets` AS `retweets`,
+        `d`.`likes` AS `likes`,
+        `t`.`parent` AS `parent`,
+        `t`.`parentType` AS `parentType`,
+        `t`.`root_id` AS `root_id`,
+        `t`.`depth` AS `depth`,
+        `t`.`timestamp` AS `timestamp`,
+        `t`.`time_delta` AS `time_delta`,
+        `d`.`tweet_text` AS `tweet_text`
+    FROM
+        (`thesis_2017`.`dataset` `d`
+        JOIN `thesis_2017`.`id2tree` `t` ON ((`t`.`tweet_id` = `d`.`tweet_id`)));
 
 ############################################################
 
@@ -115,7 +163,7 @@ COMMIT;
 ############ LABELS & TOPICS
 ###################################################
 
-DROP TABLE IF EXISTS `thesis_2017`.`tweet2topic`;
+#DROP TABLE IF EXISTS `thesis_2017`.`tweet2topic`;
 
 CREATE TABLE `thesis_2017`.`tweet2topic` (
 tweet_id bigint(20)  PRIMARY KEY,
@@ -144,11 +192,11 @@ SET `source` = 'mt';
 
 
 
-DROP TABLE IF EXISTS `thesis_2017`.`topics`;
+#DROP TABLE IF EXISTS `thesis_2017`.`topics`;
 
 CREATE TABLE `thesis_2017`.`topics` (
     `topic_id` MEDIUMINT NOT NULL PRIMARY KEY,
-    `source` text,
+    `topic_source` text,
     `title` TEXT
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8;
 
@@ -159,7 +207,7 @@ FIELDS TERMINATED BY ': '
 LINES TERMINATED BY '\n' 
 IGNORE 35 LINES
 (`topic_id`,  `title`)
-SET `source` = 'petrovic';
+SET `topic_source` = 'petrovic';
 
 LOAD DATA LOCAL INFILE 'C:\\data\\Thesis\\threads_petrovic_all\\mt_results\\topics.txt' 
 INTO TABLE `thesis_2017`.`topics`
@@ -167,7 +215,7 @@ FIELDS TERMINATED BY '\t'
 LINES TERMINATED BY '\n' 
 IGNORE 1 LINES
 ( `title`, `topic_id`)
-SET `source` = 'mt';
+SET `topic_source` = 'mt';
 
 ####################################
 DROP VIEW IF EXISTS `thesis_2017`.`tweet2topic_vw`;
@@ -176,7 +224,7 @@ CREATE VIEW `thesis_2017`.`tweet2topic_vw` AS
      SELECT 
         `r`.`topic_id` AS `topic_id`,
         `r`.`source` AS `mapping_source`,
-        `t`.`source` AS `topic_source`,
+        `t`.`topic_source` AS `topic_source`,
         `t`.`title` AS `topic_title`,
         `d`.`tweet_id` AS `tweet_id`,
         `d`.`user` AS `user`,
