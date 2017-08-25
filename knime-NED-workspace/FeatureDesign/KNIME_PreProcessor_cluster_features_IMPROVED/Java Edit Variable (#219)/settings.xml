@@ -28,27 +28,39 @@
 </config>
 <config key="Variable_4">
 <entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="output_file_unlabeld_table"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value=""/>
+</config>
+<config key="Variable_5">
+<entry key="type" type="xstring" value="variable"/>
 <entry key="name" type="xstring" value="output_file_xls"/>
 <entry key="class" type="xstring" value="STRING"/>
 <entry key="value" type="xstring" value="C:\ProgramData\MySQL\MySQL Server 5.6\Uploads\KNIME_cluster_features.xlsx"/>
 </config>
-<config key="Variable_5">
+<config key="Variable_6">
 <entry key="type" type="xstring" value="variable"/>
 <entry key="name" type="xstring" value="output_folder"/>
 <entry key="class" type="xstring" value="STRING"/>
 <entry key="value" type="xstring" value="C:\ProgramData\MySQL\MySQL Server 5.6\Uploads"/>
 </config>
-<config key="Variable_6">
+<config key="Variable_7">
 <entry key="type" type="xstring" value="variable"/>
 <entry key="name" type="xstring" value="source_type"/>
 <entry key="class" type="xstring" value="STRING"/>
 <entry key="value" type="xstring" value="KNIME_cluster_features"/>
 </config>
-<config key="Variable_7">
+<config key="Variable_8">
 <entry key="type" type="xstring" value="variable"/>
 <entry key="name" type="xstring" value="output_file_table"/>
 <entry key="class" type="xstring" value="STRING"/>
 <entry key="value" type="xstring" value="C:\ProgramData\MySQL\MySQL Server 5.6\Uploads\KNIME_cluster_features.table"/>
+</config>
+<config key="Variable_9">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="output_file_unlabeld_table"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value="C:\ProgramData\MySQL\MySQL Server 5.6\Uploads\KNIME_cluster_features_unknown.table"/>
 </config>
 </config>
 <config key="internal_node_subsettings">
@@ -57,7 +69,7 @@
 <config key="model">
 <entry key="scriptImports" type="xstring" value="// Your custom imports:%%00010"/>
 <entry key="scriptFields" type="xstring" value="// Your custom variables:%%00010"/>
-<entry key="scriptBody" type="xstring" value="// Enter your code here:%%00010%%00010out_source_type =  &quot;KNIME_cluster_features&quot;;%%00010%%00010out_output_folder = &quot;C:\\ProgramData\\MySQL\\MySQL Server 5.6\\Uploads&quot;;%%00010out_output_file_xls = out_output_folder + &quot;\\&quot; + out_source_type + &quot;.xlsx&quot;; %%00010out_output_file_table = out_output_folder + &quot;\\&quot; + out_source_type + &quot;.table&quot;; %%00010%%00010%%00010"/>
+<entry key="scriptBody" type="xstring" value="// Enter your code here:%%00010%%00010out_source_type =  &quot;KNIME_cluster_features&quot;;%%00010%%00010out_output_folder = &quot;C:\\ProgramData\\MySQL\\MySQL Server 5.6\\Uploads&quot;;%%00010out_output_file_xls = out_output_folder + &quot;\\&quot; + out_source_type + &quot;.xlsx&quot;; %%00010out_output_file_table = out_output_folder + &quot;\\&quot; + out_source_type + &quot;.table&quot;; %%00010out_output_file_unlabeld_table = out_output_folder + &quot;\\&quot; + out_source_type + &quot;_unknown.table&quot;; %%00010%%00010%%00010"/>
 <config key="jarFiles">
 <entry key="array-size" type="xint" value="0"/>
 </config>
@@ -65,7 +77,7 @@
 <entry key="array-size" type="xint" value="0"/>
 </config>
 <config key="outVars">
-<entry key="array-size" type="xint" value="4"/>
+<entry key="array-size" type="xint" value="5"/>
 <config key="0">
 <entry key="Name" type="xstring" value="output_file_xls"/>
 <entry key="JavaName" type="xstring" value="out_output_file_xls"/>
@@ -90,6 +102,13 @@
 <config key="3">
 <entry key="Name" type="xstring" value="output_file_table"/>
 <entry key="JavaName" type="xstring" value="out_output_file_table"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<entry key="Type" type="xstring" value="STRING"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="4">
+<entry key="Name" type="xstring" value="output_file_unlabeld_table"/>
+<entry key="JavaName" type="xstring" value="out_output_file_unlabeld_table"/>
 <entry key="JavaType" type="xstring" value="java.lang.String"/>
 <entry key="Type" type="xstring" value="STRING"/>
 <entry key="replaceExisting" type="xboolean" value="false"/>

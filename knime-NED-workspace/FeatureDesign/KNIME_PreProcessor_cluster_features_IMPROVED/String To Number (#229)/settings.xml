@@ -13,7 +13,7 @@
 <config key="include">
 <config key="InclList">
 <entry key="array-size" type="xint" value="1"/>
-<entry key="0" type="xstring" value="cluster size"/>
+<entry key="0" type="xstring" value="users count"/>
 </config>
 <config key="ExclList">
 <entry key="array-size" type="xint" value="0"/>
