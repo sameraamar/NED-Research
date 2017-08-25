@@ -6,7 +6,7 @@
 <entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
 </config>
 <config key="model">
-<entry key="statement" type="xstring" value="Select c.*, ttt.topic_id, ttt.title, ttt.source, d.*%%00010from clusters c%%00010left outer join%%00010%%00009(%%00010    select tt.*, t.title %%00010    from topics t %%00010%%00009right outer join tweet2topic tt%%00010%%00009%%00009on t.topic_id = tt.topic_id%%00010%%00009) ttt %%00010%%00009on ttt.tweet_id = c.tweet_id%%00010left outer join dataset d%%00010on d.tweet_id = c.tweet_id"/>
+<entry key="statement" type="xstring" value="SELECT %%00010    c.*,%%00010    ttt.topic_id,%%00010    ttt.title,%%00010    ttt.source,%%00010    d.user,%%00010    d.created_at,%%00010    d.retweets,%%00010    d.likes,%%00010    d.parent,%%00010    d.parent_User_Id,%%00010    case  %%00010%%00009%%00009when d.parentType = 1 then &quot;rply&quot; %%00010%%00009%%00009when d.parentType = 2 then &quot;rtwt&quot; %%00010%%00009%%00009when d.parentType = 3 then &quot;qte&quot; %%00010%%00009end as parentType,%%00010    d.root_id,%%00010    d.depth,%%00010    d.time_lag_str,%%00010    d.tweet_text%%00010FROM%%00010    clusters c%%00010        LEFT OUTER JOIN%%00010    (SELECT %%00010        tt.*, t.title%%00010    FROM%%00010        topics t%%00010    RIGHT OUTER JOIN tweet2topic tt ON t.topic_id = tt.topic_id) ttt ON ttt.tweet_id = c.tweet_id%%00010        LEFT OUTER JOIN%%00010    dataset d ON d.tweet_id = c.tweet_id%%00010limit $${Ilimit_rows}$$"/>
 <entry key="execute_without_configure" type="xboolean" value="true"/>
 <entry key="driver" type="xstring" value="com.mysql.jdbc.Driver"/>
 <entry key="database" type="xstring" value="jdbc:mysql://localhost:3306/thesis_2017"/>
@@ -25,7 +25,7 @@
 <config key="nodeAnnotation">
 <entry key="text" type="xstring" value="clusters"/>
 <entry key="bgcolor" type="xint" value="16777215"/>
-<entry key="x-coordinate" type="xint" value="-13"/>
+<entry key="x-coordinate" type="xint" value="87"/>
 <entry key="y-coordinate" type="xint" value="519"/>
 <entry key="width" type="xint" value="106"/>
 <entry key="height" type="xint" value="15"/>

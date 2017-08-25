@@ -59,6 +59,22 @@
 </config>
 </config>
 </config>
+<config key="node_235">
+<entry key="id" type="xint" value="235"/>
+<entry key="node_settings_file" type="xstring" value="Table Reader (#235)/settings.xml"/>
+<entry key="node_is_meta" type="xboolean" value="false"/>
+<entry key="node_type" type="xstring" value="NativeNode"/>
+<entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
+<config key="ui_settings">
+<config key="extrainfo.node.bounds">
+<entry key="array-size" type="xint" value="4"/>
+<entry key="0" type="xint" value="304"/>
+<entry key="1" type="xint" value="197"/>
+<entry key="2" type="xint" value="81"/>
+<entry key="3" type="xint" value="78"/>
+</config>
+</config>
+</config>
 </config>
 <config key="connections">
 <config key="connection_0">
@@ -74,10 +90,22 @@
 <entry key="destPort" type="xint" value="2"/>
 </config>
 <config key="connection_2">
+<entry key="sourceID" type="xint" value="43"/>
+<entry key="destID" type="xint" value="235"/>
+<entry key="sourcePort" type="xint" value="1"/>
+<entry key="destPort" type="xint" value="0"/>
+</config>
+<config key="connection_3">
 <entry key="sourceID" type="xint" value="234"/>
 <entry key="destID" type="xint" value="-1"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="0"/>
+</config>
+<config key="connection_4">
+<entry key="sourceID" type="xint" value="235"/>
+<entry key="destID" type="xint" value="-1"/>
+<entry key="sourcePort" type="xint" value="1"/>
+<entry key="destPort" type="xint" value="1"/>
 </config>
 </config>
 <config key="meta_out_ports">
@@ -101,7 +129,7 @@
 </config>
 <config key="outport_1">
 <entry key="index" type="xint" value="1"/>
-<entry key="name" type="xstring" value="Outport 1"/>
+<entry key="name" type="xstring" value="Connected to: Read table"/>
 <config key="type">
 <entry key="object_class" type="xstring" value="org.knime.core.node.BufferedDataTable"/>
 </config>

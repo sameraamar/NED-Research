@@ -12,6 +12,16 @@
 <entry key="new_column_name" type="xstring" value="List*(timestamp)"/>
 <entry key="new_column_type" type="xint" value="0"/>
 </config>
+<config key="1">
+<entry key="old_column_name" type="xstring" value="Count(tweet_id)"/>
+<entry key="new_column_name" type="xstring" value="size"/>
+<entry key="new_column_type" type="xint" value="0"/>
+</config>
+<config key="2">
+<entry key="old_column_name" type="xstring" value="Unique count(user)"/>
+<entry key="new_column_name" type="xstring" value="unique_users"/>
+<entry key="new_column_type" type="xint" value="0"/>
+</config>
 </config>
 </config>
 <entry key="customDescription" type="xstring" isnull="true" value=""/>

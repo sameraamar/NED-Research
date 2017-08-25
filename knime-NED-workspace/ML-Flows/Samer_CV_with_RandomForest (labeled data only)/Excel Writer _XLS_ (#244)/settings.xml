@@ -10,7 +10,7 @@
 <entry key="yCellOffset" type="xint" value="0"/>
 <entry key="writeColHdr" type="xboolean" value="true"/>
 <entry key="writeRowHdr" type="xboolean" value="false"/>
-<entry key="filename" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/cluster_features2_res_withcrossvalidation.xlsx"/>
+<entry key="filename" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/KNIME_tree_features_crossvalid_res.xlsx"/>
 <entry key="sheetname" type="xstring" value="score"/>
 <entry key="missingPattern" type="xstring" value=""/>
 <entry key="overwrite_ok" type="xboolean" value="true"/>
@@ -45,7 +45,7 @@
 <config key="excluded_names">
 <entry key="array-size" type="xint" value="0"/>
 </config>
-<entry key="enforce_option" type="xstring" value="EnforceExclusion"/>
+<entry key="enforce_option" type="xstring" value="EnforceInclusion"/>
 <config key="name_pattern">
 <entry key="pattern" type="xstring" value=""/>
 <entry key="type" type="xstring" value="Wildcard"/>
@@ -63,11 +63,17 @@
 </config>
 </config>
 </config>
+<config key="variables">
+<config key="filename">
+<entry key="used_variable" type="xstring" value="result_xls_crossvalid_file"/>
+<entry key="exposed_variable" type="xstring" isnull="true" value=""/>
+</config>
+</config>
 <entry key="customDescription" type="xstring" isnull="true" value=""/>
 <entry key="state" type="xstring" value="CONFIGURED"/>
 <config key="nodecontainer_message">
 <entry key="type" type="xstring" value="WARNING"/>
-<entry key="message" type="xstring" value="Output file 'C:\ProgramData\MySQL\MySQL Server 5.6\Uploads\cluster_features2_res_withcrossvalidation.xlsx' exists and will be overwritten"/>
+<entry key="message" type="xstring" value="Output file 'C:\ProgramData\MySQL\MySQL Server 5.6\Uploads\KNIME_tree_features_crossvalid_res.xlsx' exists and will be overwritten"/>
 </config>
 <entry key="factory" type="xstring" value="org.knime.ext.poi2.node.write2.XLSWriter2NodeFactory"/>
 <entry key="node-name" type="xstring" value="Excel Writer (XLS)"/>

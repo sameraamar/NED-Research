@@ -31,7 +31,7 @@
 <config key="excluded_names">
 <entry key="array-size" type="xint" value="0"/>
 </config>
-<entry key="enforce_option" type="xstring" value="EnforceExclusion"/>
+<entry key="enforce_option" type="xstring" value="EnforceInclusion"/>
 <config key="name_pattern">
 <entry key="pattern" type="xstring" value=""/>
 <entry key="type" type="xstring" value="Wildcard"/>

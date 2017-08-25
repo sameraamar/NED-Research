@@ -2,7 +2,7 @@
 <config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="workflow.knime">
 <entry key="created_by" type="xstring" value="3.4.0.v201707101013"/>
 <entry key="version" type="xstring" value="3.1.0"/>
-<entry key="name" type="xstring" value="Cluster-Features"/>
+<entry key="name" type="xstring" value="Cluster-Features (.table)"/>
 <config key="authorInformation">
 <entry key="authored-by" type="xstring" value="&lt;unknown&gt;"/>
 <entry key="authored-when" type="xstring" value="1970-01-01 02:00:00 +0200"/>
@@ -79,21 +79,21 @@
 <config key="connections">
 <config key="connection_0">
 <entry key="sourceID" type="xint" value="43"/>
-<entry key="destID" type="xint" value="234"/>
+<entry key="destID" type="xint" value="235"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="0"/>
 </config>
 <config key="connection_1">
 <entry key="sourceID" type="xint" value="43"/>
-<entry key="destID" type="xint" value="-1"/>
+<entry key="destID" type="xint" value="234"/>
 <entry key="sourcePort" type="xint" value="1"/>
-<entry key="destPort" type="xint" value="2"/>
+<entry key="destPort" type="xint" value="0"/>
 </config>
 <config key="connection_2">
 <entry key="sourceID" type="xint" value="43"/>
-<entry key="destID" type="xint" value="235"/>
+<entry key="destID" type="xint" value="-1"/>
 <entry key="sourcePort" type="xint" value="1"/>
-<entry key="destPort" type="xint" value="0"/>
+<entry key="destPort" type="xint" value="2"/>
 </config>
 <config key="connection_3">
 <entry key="sourceID" type="xint" value="234"/>
