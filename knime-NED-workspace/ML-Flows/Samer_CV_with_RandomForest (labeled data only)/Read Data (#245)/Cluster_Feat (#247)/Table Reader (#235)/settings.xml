@@ -10,7 +10,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="filename" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/KNIME_cluster_features.table"/>
+<entry key="filename" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/KNIME_cluster_features_unknown.table"/>
 <config key="limitRows_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -24,7 +24,7 @@
 </config>
 <config key="variables">
 <config key="filename">
-<entry key="used_variable" type="xstring" value="source_file_table"/>
+<entry key="used_variable" type="xstring" value="source_file_unlabeled_table"/>
 <entry key="exposed_variable" type="xstring" isnull="true" value=""/>
 </config>
 </config>

@@ -6,8 +6,8 @@
 <entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
 </config>
 <config key="model">
-<entry key="predictionColumn" type="xstring" isnull="true" value=""/>
-<entry key="targetColumn" type="xstring" isnull="true" value=""/>
+<entry key="predictionColumn" type="xstring" value="Prediction (class)"/>
+<entry key="targetColumn" type="xstring" value="class"/>
 </config>
 <entry key="customDescription" type="xstring" isnull="true" value=""/>
 <entry key="state" type="xstring" value="CONFIGURED"/>

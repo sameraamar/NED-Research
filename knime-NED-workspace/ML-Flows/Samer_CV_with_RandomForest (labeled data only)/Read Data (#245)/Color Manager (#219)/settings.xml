@@ -9,8 +9,8 @@
 <entry key="selected_column" type="xstring" value="class"/>
 <entry key="is_nominal" type="xboolean" value="true"/>
 <entry key="no" type="xint" value="-65536"/>
-<entry key="unknown" type="xint" value="-16711936"/>
-<entry key="yes" type="xint" value="-16711681"/>
+<entry key="unknown" type="xint" value="-205"/>
+<entry key="yes" type="xint" value="-13369549"/>
 <config key="values">
 <entry key="array-size" type="xint" value="3"/>
 <config key="0">
