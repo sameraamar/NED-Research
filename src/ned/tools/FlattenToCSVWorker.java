@@ -95,6 +95,7 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb.append(timestamp).append(",");
 		sb.append(retweets).append(",");
 		sb.append(likes).append(",");
+		sb.append(doc.getRetweetedFavouritesCount()).append(",");
 		
 		String parent = "";
 		String parentType = "";
@@ -103,25 +104,22 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		{
 			parent = PREFIX + jRply; 
 			parentUser = doc.getReplyToUserId();
-			parentType = "1";
+			parentType = "rply";
 		}
 
 		if(jRtwt != null && !jRtwt.isEmpty())
 		{
 			parent = PREFIX + jRtwt ; 
 			parentUser = doc.getRetweetedUserId();
-			parentType = "2";
+			parentType = "rtwt";
 		}
 		
 		if(jQuote != null && !jQuote.isEmpty())
 		{
 			parent = PREFIX + jQuote ; 
 			parentUser = doc.getQuotedUserId();
-			parentType = "3";
+			parentType = "qte";
 		}
-		
-		if(parent != null && parent.equals("102976907653558272"))
-			parent = parent;
 		
 		sb.append(parent).append(",");
 		sb.append(parentUser).append(",");
@@ -143,12 +141,12 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb.append(root).append(",");
 		sb.append(level).append(",");
 		sb.append(timeLag).append(",");
-		String topicId = positive.get( id );
-		if(topicId == null || topicId.equals("-1"))
-			topicId = "";
-		sb.append(topicId).append(",");
-		sb.append(topicId.equals("") ? "no" : "yes");
-		sb.append(",").append( cleanText(doc.getText()) );
+		//String topicId = positive.get( id );
+		//if(topicId == null || topicId.equals("-1"))
+		//	topicId = "";
+		//sb.append(topicId).append(",");
+		//sb.append(topicId.equals("") ? "no" : "yes");
+		sb.append( cleanText(doc.getText()) );
 		sb.append("\n");
 		
 		outFull.print(sb.toString());
@@ -157,9 +155,8 @@ public class FlattenToCSVWorker extends ProcessorWorker
 		sb = new StringBuffer();
 		sb.append(tmpId).append(",");
 		sb.append(root).append(",");
-		sb.append(topicId).append(",");
-		sb.append(topicId.equals("") ? "no" : "yes");
-		//sb.append(",").append( cleanText(doc.getText()) );
+		//sb.append(topicId).append(",");
+		//sb.append(topicId.equals("") ? "no" : "yes");
 		sb.append("\n");
 		
 		outShort.print(sb.toString());

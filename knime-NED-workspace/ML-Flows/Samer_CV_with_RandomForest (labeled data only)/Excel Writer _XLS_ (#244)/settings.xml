@@ -10,11 +10,11 @@
 <entry key="yCellOffset" type="xint" value="0"/>
 <entry key="writeColHdr" type="xboolean" value="true"/>
 <entry key="writeRowHdr" type="xboolean" value="false"/>
-<entry key="filename" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/KNIME_tree_features_crossvalid_res.xlsx"/>
-<entry key="sheetname" type="xstring" value="score"/>
+<entry key="filename" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/KNIME_cluster_features_crossvalid_res.xlsx"/>
+<entry key="sheetname" type="xstring" value="results"/>
 <entry key="missingPattern" type="xstring" value=""/>
 <entry key="overwrite_ok" type="xboolean" value="true"/>
-<entry key="open_file" type="xboolean" value="true"/>
+<entry key="open_file" type="xboolean" value="false"/>
 <entry key="file_must_exist" type="xboolean" value="false"/>
 <entry key="do_not_overwrite_sheet" type="xboolean" value="false"/>
 <entry key="landscape" type="xboolean" value="false"/>
@@ -25,7 +25,7 @@
 <config key="xlswriter2">
 <entry key="filter-type" type="xstring" value="STANDARD"/>
 <config key="included_names">
-<entry key="array-size" type="xint" value="15"/>
+<entry key="array-size" type="xint" value="17"/>
 <entry key="0" type="xstring" value="TruePositives"/>
 <entry key="1" type="xstring" value="FalsePositives"/>
 <entry key="2" type="xstring" value="TrueNegatives"/>
@@ -35,15 +35,18 @@
 <entry key="6" type="xstring" value="Sensitivity"/>
 <entry key="7" type="xstring" value="Specifity"/>
 <entry key="8" type="xstring" value="F-measure"/>
-<entry key="9" type="xstring" value="Accuracy"/>
-<entry key="10" type="xstring" value="Cohen's kappa"/>
-<entry key="11" type="xstring" value="learner"/>
-<entry key="12" type="xstring" value="Accuracy (#1)"/>
-<entry key="13" type="xstring" value="Cohen's kappa (#1)"/>
-<entry key="14" type="xstring" value="Area Under Curve"/>
+<entry key="9" type="xstring" value="learner"/>
+<entry key="10" type="xstring" value="Accuracy"/>
+<entry key="11" type="xstring" value="Cohen's kappa"/>
+<entry key="12" type="xstring" value="Area Under Curve"/>
+<entry key="13" type="xstring" value="features"/>
+<entry key="14" type="xstring" value="sampling"/>
+<entry key="15" type="xstring" value="Accuracy (#1)"/>
+<entry key="16" type="xstring" value="Cohen's kappa (#1)"/>
 </config>
 <config key="excluded_names">
-<entry key="array-size" type="xint" value="0"/>
+<entry key="array-size" type="xint" value="1"/>
+<entry key="0" type="xstring" value="Iteration"/>
 </config>
 <entry key="enforce_option" type="xstring" value="EnforceInclusion"/>
 <config key="name_pattern">
@@ -70,11 +73,7 @@
 </config>
 </config>
 <entry key="customDescription" type="xstring" isnull="true" value=""/>
-<entry key="state" type="xstring" value="CONFIGURED"/>
-<config key="nodecontainer_message">
-<entry key="type" type="xstring" value="WARNING"/>
-<entry key="message" type="xstring" value="Output file 'C:\ProgramData\MySQL\MySQL Server 5.6\Uploads\KNIME_tree_features_crossvalid_res.xlsx' exists and will be overwritten"/>
-</config>
+<entry key="state" type="xstring" value="IDLE"/>
 <entry key="factory" type="xstring" value="org.knime.ext.poi2.node.write2.XLSWriter2NodeFactory"/>
 <entry key="node-name" type="xstring" value="Excel Writer (XLS)"/>
 <entry key="node-bundle-name" type="xstring" value="KNIME POI (xls/xlsx) Plug-in"/>

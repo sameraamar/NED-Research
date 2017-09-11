@@ -6,155 +6,110 @@ from sklearn.metrics import precision_recall_fscore_support as pr
 from scipy import stats
 import subprocess
 
+def overlap_check(model1, model2, seed, left_head, right_head):
+    a = set(model1.loc[model1['seed_id'] == seed].ix[:, 2].head(left_head))
+    b = set(model2.loc[model2['seed_id'] == seed].ix[:, 2].head(right_head))
 
+    return 1.0 * len(a.intersection(b)) / left_head
 
-def myfunc(model1, model2, seed):
-    a = set(model1.loc[model1['seed_id'] == seed].ix[:, 2].head(12))
-    b = set(model2.loc[model2['seed_id'] == seed].ix[:, 2].head(12))
+def compare(left, right):
+    seeds = set( [x for x in left['seed_id']] )
 
-    return len(a), len(b), len(a.intersection(b))
+    res = [(seed, overlap_check(left, right, seed, 10, 10), overlap_check(left, right, seed, 10, 30), overlap_check(right, left, seed, 10, 30)) for seed in seeds]
+    return p.DataFrame(res)
 
-ITEM_GPD_READER_EXE = 'C:\\data\\Work\\Source\\Repos\\SC.RecoModeling\\Source\\Offline\\Item2ItemReader\\bin\\Release\\Item2ItemReader.exe'
+    #return aa, [x for x in zip(*aa)]
 
-def quote(filename):
-    return '"' + filename + '"'
+def compare_files(left_model_file, right_model_file):
+    print('Comparing...')
 
-def execute(cmd, out=None):
-    """
-        Purpose  : To execute a command and return exit status
-        Argument : cmd - command to execute
-        Return   : exit_code
-    """
+    names = ['seed_id', 'seed_title', 'reco_id', 'reco_title', 'score']
+    left_model = p.read_csv(left_model_file, sep=",", header=None, names=names)
+    left_pairs = [x for x in zip(left_model.ix[:, 0], left_model.ix[:, 2], left_model.ix[:, 4])]
 
-    if out is None:
-        output = subprocess.PIPE
-    else:
-        output = open(out, "w", encoding="utf-8")
+    right_model = p.read_csv(right_model_file, sep=",", header=None, names=names)
+    right_pairs = [x for x in zip(right_model.ix[:, 0], right_model.ix[:, 2], right_model.ix[:, 4])]
 
-    process = subprocess.Popen(cmd, shell=True, stdout=output, stderr=subprocess.PIPE)
-    print('echo: ', ' '.join(cmd))
+    #print(left_model.shape, left_model.head(5))
+    #print(right_model.shape, right_model.head(5))
 
-    (result, error) = process.communicate()
+    res = compare(left_model, right_model)
+    return res
+def plot_res(res):
+    fig = plt.figure()
+    st = fig.suptitle("Recommendation Models Comparison", fontsize="x-large")
 
-    rc = process.wait()
+    ax1 = fig.add_subplot(311)
+    ax1.hist(np.asanyarray( res[1]), color="blue")
+    ax1.set_title("Left top 10 <==> Right top 10", fontsize="small")
 
-    #if (error is None):
-    #    error = ''
+    ax2 = fig.add_subplot(312)
+    ax2.hist( np.asanyarray( res[2]), color="red" )
+    ax2.set_title("Left top 10 <==> Right top 30")
 
-    #if (result is None):
-    #    result = ''
+    ax3 = fig.add_subplot(313)
+    ax3.hist( np.asanyarray( res[3]) )
+    ax3.set_title("Right top 10 <==> Left top 30")
 
-    #error = error.decode(encoding='UTF-8',errors='strict').strip()
-    #result = result.decode(encoding='UTF-8',errors='strict')
+    fig.tight_layout()
 
-    if rc != 0 or (error is not None and error != ""):
-        #print ("Error: failed to execute command:")
-        error = error.decode(encoding='UTF-8',errors='strict')
-        #print (error)
+    # shift subplots down:
+    st.set_y(0.95)
+    fig.subplots_adjust(top=0.85)
 
-    return result, error
-# def
+    plt.show()
 
-def read_gpd_info(gpdpath, catpath, seedspath, outpath):
-    command =  ["del", outpath]
-    print('... ' , *execute(command))
+    plt.hist([100*res[1], 100*res[2], 100*res[3]], 10, label=['top 10 vs. top 10', 'top 10 vs. top 30', 'top 30 vs. top 10'], histtype='bar')
+    plt.xlabel('overlap %')
+    plt.ylabel('count')
+    plt.legend()
+    plt.show()
 
-
-    tmp = gpdpath.split('\\')
-    tmp = tmp[len(tmp)-1].split('/')
-    tmp = tmp[len(tmp)-1].split('.')
-    version = tmp[0]
-
-    command = [ITEM_GPD_READER_EXE, '-v', version, '-gpd', gpdpath, '-cat', catpath, seedspath, outpath] #, '>', quote(outpath)]
-    result, error = execute(command)
-
-    print('res:', result)
-    print('err:', error)
-
-    #' -bin C:\data\Work\Source\Repos\SC.RecoModeling\Drop\Release\AnyCPU\Source\Offline\ExplorationTool\PgProduct\itemModel_Reco_20170719082438.bin ' \
-    return True
-
-def prepareV2V(seedspath, outpath):
-    path    = 'C:\\temp\\DesktopApps-V2V modeling'
-
-    gpdpath = path + '\\Reco_20170822100829.GlobalPredictionData'
-    catpath = path + '\\catalog.csv'
-
-    return read_gpd_info(gpdpath, catpath, seedspath, outpath)
-
-def prepareP2P(seedspath, outpath):
-    path    = 'C:\\temp\\DesktopApps-P2P modeling'
-
-    gpdpath = path + '\\Reco_20170822093207.GlobalPredictionData'
-    catpath = path + '\\catalog.csv'
-
-    return read_gpd_info(gpdpath, catpath, seedspath, outpath)
 
 if __name__ == "__main__":
     flag = True
-    v2vpath = 'C:\\temp\\DesktopApps_V2V_vs_P2P\\v2v.txt'
-    p2ppath = 'C:\\temp\\DesktopApps_V2V_vs_P2P\\p2p.txt'
+    left_model_file = 'C:\\temp\\DesktopApps_V2V_vs_P2P\\v2v_long.txt'
+    right_model_file = 'C:\\temp\\DesktopApps_V2V_vs_P2P\\p2p_long.txt'
 
-    if flag:
-        seedspath = 'C:\\temp\\DesktopApps_V2V_vs_P2P\\seeds_apps.txt'
-        if not prepareV2V(seedspath, v2vpath):
-            exit()
+    res = compare_files(left_model_file, right_model_file)
 
-        if not prepareP2P(seedspath, p2ppath):
-            exit()
+    print(res.head(10))
 
-    names = ['seed_id', 'seed_title', 'reco_id', 'reco_title']
-    v2v = p.read_csv(v2vpath, sep=",", header=None, names=names)
-    v2v_pairs = [x for x in zip(v2v.ix[:, 0], v2v.ix[:, 2])]
+    plot_res(res)
+
+    #fig = plt.gcf()
+    #plt.show()
 
 
-    p2p = p.read_csv(p2ppath, sep=",", header=None, names=names)
-    p2p_pairs = [x for x in zip(p2p.ix[:, 0], p2p.ix[:, 2])]
+    print("-----------------------------------------")
 
-    print(v2v.shape, v2v.head(5))
-    print(p2p.shape, p2p.head(5))
+    left_set = set(left_pairs)
+    right_set = set(right_pairs)
 
-
-    set_v2v = set(v2v_pairs)
-    set_p2p = set(p2p_pairs)
-
-    print('V2V', len(set_v2v),
-          ', P2P', len(set_p2p),
-          ', intersection: ', len( set_v2v.intersection( set_p2p ) ),
-          ', V2V-P2P:', len( set_v2v.difference( set_p2p )),
-          ', P2P-V2V:', len( set_p2p.difference( set_v2v )))
+    print('left_model', len(left_set),
+          ', right_model', len(right_set),
+          ', intersection: ', len( left_set.intersection( right_set ) ),
+          ', left_model-P2P:', len( left_set.difference( right_set )),
+          ', right_model-left_model:', len( right_set.difference( left_set )))
 
 
-    a = np.array(set_p2p)
-    b = np.array(set_v2v)
+    a = np.array(right_set)
+    b = np.array(left_set)
 
     error = np.mean( a != b )
     error = (a != b).sum()/float(a.size)
     print(error)
 
-    venn2([set(v2v_pairs), set(p2p_pairs)], set_labels=('V2V', 'P2P'))
+    venn2([set(left_pairs), set(right_pairs)], set_labels=('left_model', 'right_model'))
     plt.show()
 
 
-    seeds = set( [x for (x,y) in v2v_pairs] )
+    #intersections1 = [(id,x, int(x/b*100)*1.0) for (id, a, b, x) in aa]
+    #intersections = [int(x/b*100)*1.0 for (id, a, b, x) in aa]
 
+    #print(intersections1, intersections)
+    #print(stats.describe(intersections))
 
-    aa = [(seed, *myfunc(v2v, p2p, seed)) for seed in seeds]
-    print(aa)
-
-    intersections1 = [(id,x, int(x/b*100)*1.0) for (id, a, b, x) in aa]
-    intersections = [int(x/b*100)*1.0 for (id, a, b, x) in aa]
-
-    print(intersections1, intersections)
-    print(stats.describe(intersections))
-
-    plt.hist(intersections)
-    plt.title("Gaussian Histogram")
-    plt.xlabel("Value")
-    plt.ylabel("Frequency")
-
-    fig = plt.gcf()
-    plt.show()
 
     #----------------------
 

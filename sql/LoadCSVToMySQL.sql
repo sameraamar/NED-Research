@@ -2,6 +2,41 @@
 
 ###################################################
 
+DROP TABLE IF EXISTS `thesis_2017`.`tweet_ids`;
+
+CREATE TABLE `thesis_2017`.`tweet_ids` (
+tweet_id bigint(20)  PRIMARY KEY,
+user text  DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+LOAD DATA LOCAL INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 5.6\\Uploads\\tweet_ids.csv' 
+INTO TABLE `thesis_2017`.`tweet_ids`
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n';
+
+
+DROP TABLE IF EXISTS `mt`.`mt_may30`;
+
+CREATE TABLE `mt`.`mt_may30` (
+lead_id bigint(20)  PRIMARY KEY,
+entropy double DEFAULT NULL,
+users int(11)  DEFAULT NULL,
+size int(11)  DEFAULT NULL
+#,
+#tweet_text text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOAD DATA LOCAL INFILE 'C:\\data\\Thesis\\threads_petrovic_all\\DataForMT-EndOfMay\\merged2.file.csv' 
+INTO TABLE `mt`.`mt_may30`
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(`lead_id`, `entropy`, `users`, `size`) #, `tweet_text`)
+;
+
+
+
 DROP TABLE IF EXISTS `thesis_2017`.`dataset`;
 
 CREATE TABLE `thesis_2017`.`dataset` (
@@ -11,27 +46,30 @@ created_at text  DEFAULT NULL,
 timestamp int(11) ,
 retweets int(11)  DEFAULT NULL,
 likes int(11)  DEFAULT NULL,
+rtwt_likes int(11)  DEFAULT NULL,
 parent bigint(20)  DEFAULT NULL,
 parent_User_Id text  DEFAULT NULL,
 parentType text  DEFAULT NULL,
-root_id bigint(20) DEFAULT NULL,
-depth int(11),
+#root_id bigint(20) DEFAULT NULL,
+#depth int(11),
 time_lag_str text ,
 tweet_text text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-LOAD DATA LOCAL INFILE 'C:\\data\\Thesis\\threads_petrovic_all\\analysis_3m\\dataset_full_5m_V1.txt' 
+LOAD DATA LOCAL INFILE 'C:\\data\\Thesis\\threads_petrovic_all\\analysis_3m\\dataset_full_ALL_RTWT_V1.txt' 
 INTO TABLE `thesis_2017`.`dataset`
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n' 
 IGNORE 1 LINES
 
 
-(`tweet_id`, `user`, `created_at`, `timestamp`, `retweets`, `likes`, @vparent, `parent_User_Id`, `parentType`, @vroot_id, @vdepth, `time_lag_str`, @dummy, @dummy, `tweet_text`)
-SET `parent` = nullif(@vparent,''),
-    `root_id` = nullif(@vroot_id,''),
-    `depth` = nullif(@vdepth,'');
+(`tweet_id`, `user`, `created_at`, `timestamp`, `retweets`, `likes`, `rtwt_likes`, @vparent, `parent_User_Id`, `parentType`, @dummy, @dummy, `time_lag_str`, `tweet_text`)
+SET `parent` = nullif(@vparent,'');
+    #`root_id` = nullif(@vroot_id,''),
+    #`depth` = nullif(@vdepth,'');
+    
+    
 #(`tweet_id`, `user`, `created_at`, `timestamp`, `retweets`, `likes`, `parent`, `parent_User_Id`, `parentType`, `root_id`, `depth`, `time_lag_str`, topic_id, is_topic)
 
 ############################################################

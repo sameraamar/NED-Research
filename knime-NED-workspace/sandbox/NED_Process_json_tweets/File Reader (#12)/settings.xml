@@ -48,7 +48,7 @@
 <entry key="ignEmtpyTokensAtEOR" type="xboolean" value="false"/>
 <entry key="acceptShortLines" type="xboolean" value="false"/>
 <entry key="uniquifyRowID" type="xboolean" value="false"/>
-<entry key="MaxNumOfRows" type="xlong" value="1000"/>
+<entry key="MaxNumOfRows" type="xlong" value="-1"/>
 <entry key="ColNumDetermLine" type="xint" value="2"/>
 <entry key="CharsetName" type="xstring" isnull="true" value=""/>
 <entry key="ConnectTimeoutInSeconds" type="xint" value="1"/>

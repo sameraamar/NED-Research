@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="node_file" type="xstring" value="settings.xml"/>
+<config key="flow_stack"/>
+<config key="internal_node_subsettings">
+<entry key="memory_policy" type="xstring" value="CacheOnDisc"/>
+</config>
+<config key="model">
+<entry key="mode" type="xstring" value="MINMAX"/>
+<entry key="new-min" type="xdouble" value="0.0"/>
+<entry key="new-max" type="xdouble" value="1.0"/>
+<config key="data-column-filter">
+<entry key="filter-type" type="xstring" value="STANDARD"/>
+<config key="included_names">
+<entry key="array-size" type="xint" value="168"/>
+<entry key="0" type="xstring" value="A_all"/>
+<entry key="1" type="xstring" value="C_all"/>
+<entry key="2" type="xstring" value="G_all"/>
+<entry key="3" type="xstring" value="U_all"/>
+<entry key="4" type="xstring" value="AA_all"/>
+<entry key="5" type="xstring" value="AC_all"/>
+<entry key="6" type="xstring" value="AG_all"/>
+<entry key="7" type="xstring" value="AU_all"/>
+<entry key="8" type="xstring" value="CA_all"/>
+<entry key="9" type="xstring" value="CC_all"/>
+<entry key="10" type="xstring" value="CG_all"/>
+<entry key="11" type="xstring" value="CU_all"/>
+<entry key="12" type="xstring" value="GA_all"/>
+<entry key="13" type="xstring" value="GC_all"/>
+<entry key="14" type="xstring" value="GG_all"/>
+<entry key="15" type="xstring" value="GU_all"/>
+<entry key="16" type="xstring" value="UA_all"/>
+<entry key="17" type="xstring" value="UC_all"/>
+<entry key="18" type="xstring" value="UG_all"/>
+<entry key="19" type="xstring" value="UU_all"/>
+<entry key="20" type="xstring" value="AAA_all"/>
+<entry key="21" type="xstring" value="AAC_all"/>
+<entry key="22" type="xstring" value="AAG_all"/>
+<entry key="23" type="xstring" value="AAU_all"/>
+<entry key="24" type="xstring" value="ACA_all"/>
+<entry key="25" type="xstring" value="ACC_all"/>
+<entry key="26" type="xstring" value="ACG_all"/>
+<entry key="27" type="xstring" value="ACU_all"/>
+<entry key="28" type="xstring" value="AGA_all"/>
+<entry key="29" type="xstring" value="AGC_all"/>
+<entry key="30" type="xstring" value="AGG_all"/>
+<entry key="31" type="xstring" value="AGU_all"/>
+<entry key="32" type="xstring" value="AUA_all"/>
+<entry key="33" type="xstring" value="AUC_all"/>
+<entry key="34" type="xstring" value="AUG_all"/>
+<entry key="35" type="xstring" value="AUU_all"/>
+<entry key="36" type="xstring" value="CAA_all"/>
+<entry key="37" type="xstring" value="CAC_all"/>
+<entry key="38" type="xstring" value="CAG_all"/>
+<entry key="39" type="xstring" value="CAU_all"/>
+<entry key="40" type="xstring" value="CCA_all"/>
+<entry key="41" type="xstring" value="CCC_all"/>
+<entry key="42" type="xstring" value="CCG_all"/>
+<entry key="43" type="xstring" value="CCU_all"/>
+<entry key="44" type="xstring" value="CGA_all"/>
+<entry key="45" type="xstring" value="CGC_all"/>
+<entry key="46" type="xstring" value="CGG_all"/>
+<entry key="47" type="xstring" value="CGU_all"/>
+<entry key="48" type="xstring" value="CUA_all"/>
+<entry key="49" type="xstring" value="CUC_all"/>
+<entry key="50" type="xstring" value="CUG_all"/>
+<entry key="51" type="xstring" value="CUU_all"/>
+<entry key="52" type="xstring" value="GAA_all"/>
+<entry key="53" type="xstring" value="GAC_all"/>
+<entry key="54" type="xstring" value="GAG_all"/>
+<entry key="55" type="xstring" value="GAU_all"/>
+<entry key="56" type="xstring" value="GCA_all"/>
+<entry key="57" type="xstring" value="GCC_all"/>
+<entry key="58" type="xstring" value="GCG_all"/>
+<entry key="59" type="xstring" value="GCU_all"/>
+<entry key="60" type="xstring" value="GGA_all"/>
+<entry key="61" type="xstring" value="GGC_all"/>
+<entry key="62" type="xstring" value="GGG_all"/>
+<entry key="63" type="xstring" value="GGU_all"/>
+<entry key="64" type="xstring" value="GUA_all"/>
+<entry key="65" type="xstring" value="GUC_all"/>
+<entry key="66" type="xstring" value="GUG_all"/>
+<entry key="67" type="xstring" value="GUU_all"/>
+<entry key="68" type="xstring" value="UAA_all"/>
+<entry key="69" type="xstring" value="UAC_all"/>
+<entry key="70" type="xstring" value="UAG_all"/>
+<entry key="71" type="xstring" value="UAU_all"/>
+<entry key="72" type="xstring" value="UCA_all"/>
+<entry key="73" type="xstring" value="UCC_all"/>
+<entry key="74" type="xstring" value="UCG_all"/>
+<entry key="75" type="xstring" value="UCU_all"/>
+<entry key="76" type="xstring" value="UGA_all"/>
+<entry key="77" type="xstring" value="UGC_all"/>
+<entry key="78" type="xstring" value="UGG_all"/>
+<entry key="79" type="xstring" value="UGU_all"/>
+<entry key="80" type="xstring" value="UUA_all"/>
+<entry key="81" type="xstring" value="UUC_all"/>
+<entry key="82" type="xstring" value="UUG_all"/>
+<entry key="83" type="xstring" value="UUU_all"/>
+<entry key="84" type="xstring" value="A"/>
+<entry key="85" type="xstring" value="C"/>
+<entry key="86" type="xstring" value="G"/>
+<entry key="87" type="xstring" value="U"/>
+<entry key="88" type="xstring" value="AA"/>
+<entry key="89" type="xstring" value="AC"/>
+<entry key="90" type="xstring" value="AG"/>
+<entry key="91" type="xstring" value="AU"/>
+<entry key="92" type="xstring" value="CA"/>
+<entry key="93" type="xstring" value="CC"/>
+<entry key="94" type="xstring" value="CG"/>
+<entry key="95" type="xstring" value="CU"/>
+<entry key="96" type="xstring" value="GA"/>
+<entry key="97" type="xstring" value="GC"/>
+<entry key="98" type="xstring" value="GG"/>
+<entry key="99" type="xstring" value="GU"/>
+<entry key="100" type="xstring" value="UA"/>
+<entry key="101" type="xstring" value="UC"/>
+<entry key="102" type="xstring" value="UG"/>
+<entry key="103" type="xstring" value="UU"/>
+<entry key="104" type="xstring" value="AAA"/>
+<entry key="105" type="xstring" value="AAC"/>
+<entry key="106" type="xstring" value="AAG"/>
+<entry key="107" type="xstring" value="AAU"/>
+<entry key="108" type="xstring" value="ACA"/>
+<entry key="109" type="xstring" value="ACC"/>
+<entry key="110" type="xstring" value="ACG"/>
+<entry key="111" type="xstring" value="ACU"/>
+<entry key="112" type="xstring" value="AGA"/>
+<entry key="113" type="xstring" value="AGC"/>
+<entry key="114" type="xstring" value="AGG"/>
+<entry key="115" type="xstring" value="AGU"/>
+<entry key="116" type="xstring" value="AUA"/>
+<entry key="117" type="xstring" value="AUC"/>
+<entry key="118" type="xstring" value="AUG"/>
+<entry key="119" type="xstring" value="AUU"/>
+<entry key="120" type="xstring" value="CAA"/>
+<entry key="121" type="xstring" value="CAC"/>
+<entry key="122" type="xstring" value="CAG"/>
+<entry key="123" type="xstring" value="CAU"/>
+<entry key="124" type="xstring" value="CCA"/>
+<entry key="125" type="xstring" value="CCC"/>
+<entry key="126" type="xstring" value="CCG"/>
+<entry key="127" type="xstring" value="CCU"/>
+<entry key="128" type="xstring" value="CGA"/>
+<entry key="129" type="xstring" value="CGC"/>
+<entry key="130" type="xstring" value="CGG"/>
+<entry key="131" type="xstring" value="CGU"/>
+<entry key="132" type="xstring" value="CUA"/>
+<entry key="133" type="xstring" value="CUC"/>
+<entry key="134" type="xstring" value="CUG"/>
+<entry key="135" type="xstring" value="CUU"/>
+<entry key="136" type="xstring" value="GAA"/>
+<entry key="137" type="xstring" value="GAC"/>
+<entry key="138" type="xstring" value="GAG"/>
+<entry key="139" type="xstring" value="GAU"/>
+<entry key="140" type="xstring" value="GCA"/>
+<entry key="141" type="xstring" value="GCC"/>
+<entry key="142" type="xstring" value="GCG"/>
+<entry key="143" type="xstring" value="GCU"/>
+<entry key="144" type="xstring" value="GGA"/>
+<entry key="145" type="xstring" value="GGC"/>
+<entry key="146" type="xstring" value="GGG"/>
+<entry key="147" type="xstring" value="GGU"/>
+<entry key="148" type="xstring" value="GUA"/>
+<entry key="149" type="xstring" value="GUC"/>
+<entry key="150" type="xstring" value="GUG"/>
+<entry key="151" type="xstring" value="GUU"/>
+<entry key="152" type="xstring" value="UAA"/>
+<entry key="153" type="xstring" value="UAC"/>
+<entry key="154" type="xstring" value="UAG"/>
+<entry key="155" type="xstring" value="UAU"/>
+<entry key="156" type="xstring" value="UCA"/>
+<entry key="157" type="xstring" value="UCC"/>
+<entry key="158" type="xstring" value="UCG"/>
+<entry key="159" type="xstring" value="UCU"/>
+<entry key="160" type="xstring" value="UGA"/>
+<entry key="161" type="xstring" value="UGC"/>
+<entry key="162" type="xstring" value="UGG"/>
+<entry key="163" type="xstring" value="UGU"/>
+<entry key="164" type="xstring" value="UUA"/>
+<entry key="165" type="xstring" value="UUC"/>
+<entry key="166" type="xstring" value="UUG"/>
+<entry key="167" type="xstring" value="UUU"/>
+</config>
+<config key="excluded_names">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<entry key="enforce_option" type="xstring" value="EnforceExclusion"/>
+<config key="name_pattern">
+<entry key="pattern" type="xstring" value=""/>
+<entry key="type" type="xstring" value="Wildcard"/>
+<entry key="caseSensitive" type="xboolean" value="true"/>
+</config>
+<config key="datatype">
+<config key="typelist">
+<entry key="org.knime.core.data.DoubleValue" type="xboolean" value="false"/>
+</config>
+</config>
+</config>
+</config>
+<entry key="customDescription" type="xstring" isnull="true" value=""/>
+<entry key="state" type="xstring" value="IDLE"/>
+<entry key="factory" type="xstring" value="org.knime.base.node.preproc.normalize3.Normalizer3NodeFactory"/>
+<entry key="node-name" type="xstring" value="Normalizer"/>
+<entry key="node-bundle-name" type="xstring" value="KNIME Base Nodes"/>
+<entry key="node-bundle-symbolic-name" type="xstring" value="org.knime.base"/>
+<entry key="node-bundle-vendor" type="xstring" value="KNIME GmbH, Konstanz, Germany"/>
+<entry key="node-bundle-version" type="xstring" value="3.4.0.v201707071451"/>
+<entry key="node-feature-name" type="xstring" value="KNIME Core"/>
+<entry key="node-feature-symbolic-name" type="xstring" value="org.knime.features.base.feature.group"/>
+<entry key="node-feature-vendor" type="xstring" value="KNIME GmbH, Konstanz, Germany"/>
+<entry key="node-feature-version" type="xstring" value="3.4.0.v201707101013"/>
+<config key="factory_settings"/>
+<entry key="name" type="xstring" value="Normalizer"/>
+<entry key="hasContent" type="xboolean" value="false"/>
+<entry key="isInactive" type="xboolean" value="false"/>
+<config key="ports">
+<config key="port_1">
+<entry key="index" type="xint" value="1"/>
+<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+</config>
+<config key="port_2">
+<entry key="index" type="xint" value="2"/>
+<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+</config>
+</config>
+<config key="filestores">
+<entry key="file_store_location" type="xstring" isnull="true" value=""/>
+<entry key="file_store_id" type="xstring" isnull="true" value=""/>
+</config>
+</config>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="node_file" type="xstring" value="settings.xml"/>
+<config key="flow_stack">
+<config key="Variable_0">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="sampling_method"/>
+<entry key="class" type="xstring" value="INTEGER"/>
+<entry key="value" type="xint" value="-1"/>
+</config>
+<config key="Variable_1">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="features1"/>
+<entry key="class" type="xstring" value="INTEGER"/>
+<entry key="value" type="xint" value="-1"/>
+</config>
+<config key="Variable_2">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="feature_str"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value=""/>
+</config>
+<config key="Variable_3">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="sampling_method_str"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value=""/>
+</config>
+<config key="Variable_4">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="debug"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value=""/>
+</config>
+<config key="Variable_5">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="out_result_xls_crossvalid_file_tmp"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value=""/>
+</config>
+<config key="Variable_6">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="sampling_method"/>
+<entry key="class" type="xstring" value="INTEGER"/>
+<entry key="value" type="xint" value="0"/>
+</config>
+<config key="Variable_7">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="features1"/>
+<entry key="class" type="xstring" value="INTEGER"/>
+<entry key="value" type="xint" value="0"/>
+</config>
+<config key="Variable_8">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="feature_str"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value="minimal features (+ entropy)"/>
+</config>
+<config key="Variable_9">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="sampling_method_str"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value="Unbalanced"/>
+</config>
+<config key="Variable_10">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="debug"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value="0:  [out_sampling_method: 0] [tmp: 0] [out_features1: 0]"/>
+</config>
+<config key="Variable_11">
+<entry key="type" type="xstring" value="variable"/>
+<entry key="name" type="xstring" value="out_result_xls_crossvalid_file_tmp"/>
+<entry key="class" type="xstring" value="STRING"/>
+<entry key="value" type="xstring" value="C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/KNIME_cluster_features_crossvalid_res0.xlsx"/>
+</config>
+</config>
+<config key="internal_node_subsettings">
+<entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
+</config>
+<config key="model">
+<entry key="scriptImports" type="xstring" value="// Your custom imports:%%00010"/>
+<entry key="scriptFields" type="xstring" value="// Your custom variables:%%00010"/>
+<entry key="scriptBody" type="xstring" value="// Enter your code here:%%00010%%00010//v_currentIteration += 6;%%00010%%00010debug = v_currentIteration + &quot;: &quot;;%%00010%%00010out_sampling_method = v_currentIteration / 3; //NUMBER OF SAMPLES%%00010int tmp = v_currentIteration % 3; //NUMBER OF FEATURE SETS%%00010%%00010debug += &quot; [out_sampling_method: &quot; + out_sampling_method + &quot;]&quot;;%%00010debug += &quot; [tmp: &quot; + tmp + &quot;]&quot;;%%00010%%00010out_features1 = tmp;%%00010debug += &quot; [out_features1: &quot; + out_features1 + &quot;]&quot;;%%00010%%00010%%00010if(out_sampling_method == 0)%%00010%%00009out_sampling_method_str = &quot;Unbalanced&quot;;%%00010else if(out_sampling_method == 1)%%00010%%00009out_sampling_method_str = &quot;SMOTE&quot;;%%00010else if(out_sampling_method == 2)%%00010%%00009out_sampling_method_str = &quot;Under-Sampling&quot;;%%00010%%00010if(out_features1 == 0)%%00010%%00009out_feature_str = &quot;minimal features (+ entropy)&quot;;%%00010else if (out_features1 == 1 )%%00010%%00009out_feature_str = &quot;extended features (- timestamp)&quot;;%%00010else if (out_features1 == 2 )%%00010%%00009out_feature_str = &quot;extended features (+ timestamp)&quot;;%%00010%%00010out_out_result_xls_crossvalid_file_tmp = v_result_xls_crossvalid_file.replace(&quot;.xlsx&quot;, v_currentIteration+&quot;.xlsx&quot;);%%00010%%00010%%00010"/>
+<config key="jarFiles">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<config key="outCols">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<config key="outVars">
+<entry key="array-size" type="xint" value="6"/>
+<config key="0">
+<entry key="Name" type="xstring" value="sampling_method"/>
+<entry key="JavaName" type="xstring" value="out_sampling_method"/>
+<entry key="JavaType" type="xstring" value="java.lang.Integer"/>
+<entry key="Type" type="xstring" value="INTEGER"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="1">
+<entry key="Name" type="xstring" value="features1"/>
+<entry key="JavaName" type="xstring" value="out_features1"/>
+<entry key="JavaType" type="xstring" value="java.lang.Integer"/>
+<entry key="Type" type="xstring" value="INTEGER"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="2">
+<entry key="Name" type="xstring" value="feature_str"/>
+<entry key="JavaName" type="xstring" value="out_feature_str"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<entry key="Type" type="xstring" value="STRING"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="3">
+<entry key="Name" type="xstring" value="sampling_method_str"/>
+<entry key="JavaName" type="xstring" value="out_sampling_method_str"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<entry key="Type" type="xstring" value="STRING"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="4">
+<entry key="Name" type="xstring" value="debug"/>
+<entry key="JavaName" type="xstring" value="debug"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<entry key="Type" type="xstring" value="STRING"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+<config key="5">
+<entry key="Name" type="xstring" value="out_result_xls_crossvalid_file_tmp"/>
+<entry key="JavaName" type="xstring" value="out_out_result_xls_crossvalid_file_tmp"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<entry key="Type" type="xstring" value="STRING"/>
+<entry key="replaceExisting" type="xboolean" value="false"/>
+</config>
+</config>
+<config key="inCols">
+<entry key="array-size" type="xint" value="0"/>
+</config>
+<config key="inVars">
+<entry key="array-size" type="xint" value="2"/>
+<config key="0">
+<entry key="Name" type="xstring" value="currentIteration"/>
+<entry key="JavaName" type="xstring" value="v_currentIteration"/>
+<entry key="JavaType" type="xstring" value="java.lang.Integer"/>
+<entry key="Type" type="xstring" value="INTEGER"/>
+</config>
+<config key="1">
+<entry key="Name" type="xstring" value="result_xls_crossvalid_file"/>
+<entry key="JavaName" type="xstring" value="v_result_xls_crossvalid_file"/>
+<entry key="JavaType" type="xstring" value="java.lang.String"/>
+<entry key="Type" type="xstring" value="STRING"/>
+</config>
+</config>
+<entry key="version" type="xstring" value="version 1.x"/>
+<entry key="templateUUID" type="xstring" isnull="true" value=""/>
+<entry key="runOnExecute" type="xboolean" value="false"/>
+</config>
+<entry key="customDescription" type="xstring" isnull="true" value=""/>
+<entry key="state" type="xstring" value="IDLE"/>
+<entry key="factory" type="xstring" value="org.knime.base.node.jsnippet.JavaEditVarNodeFactory"/>
+<entry key="node-name" type="xstring" value="Java Edit Variable"/>
+<entry key="node-bundle-name" type="xstring" value="KNIME Java Snippet Nodes"/>
+<entry key="node-bundle-symbolic-name" type="xstring" value="org.knime.jsnippets"/>
+<entry key="node-bundle-vendor" type="xstring" value="KNIME GmbH, Konstanz, Germany"/>
+<entry key="node-bundle-version" type="xstring" value="3.4.0.v201706141136"/>
+<entry key="node-feature-name" type="xstring" value="KNIME Core"/>
+<entry key="node-feature-symbolic-name" type="xstring" value="org.knime.features.base.feature.group"/>
+<entry key="node-feature-vendor" type="xstring" value="KNIME GmbH, Konstanz, Germany"/>
+<entry key="node-feature-version" type="xstring" value="3.4.0.v201707101013"/>
+<config key="factory_settings"/>
+<entry key="name" type="xstring" value="Java Edit Variable"/>
+<entry key="hasContent" type="xboolean" value="false"/>
+<entry key="isInactive" type="xboolean" value="false"/>
+<config key="ports">
+<config key="port_1">
+<entry key="index" type="xint" value="1"/>
+<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+</config>
+</config>
+<config key="filestores">
+<entry key="file_store_location" type="xstring" isnull="true" value=""/>
+<entry key="file_store_id" type="xstring" isnull="true" value=""/>
+</config>
+</config>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<met:KNIMEMetaInfo xmlns:met="http://www.knime.org/2.9/metainfo">
+  <met:element form="text" name="Author">KNIME</met:element>
+  <met:element form="date" name="Creation Date">21/6/2010</met:element>
+  <met:element form="multiline" name="Comments">A Cross-Validation setup is provided by using a Support-Vector-Machine (SVM)
+as base learning algorithm.</met:element>
+</met:KNIMEMetaInfo>

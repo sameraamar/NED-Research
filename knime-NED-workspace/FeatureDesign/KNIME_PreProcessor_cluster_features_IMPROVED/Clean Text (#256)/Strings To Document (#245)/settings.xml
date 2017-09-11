@@ -6,76 +6,36 @@
 <entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
 </config>
 <config key="model">
-<config key="useTitleColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="useTitleColumn" type="xboolean" value="false"/>
-<config key="TitleCol_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="false"/>
-</config>
-<entry key="TitleCol" type="xstring" value="post_time"/>
-<config key="useAuthorsColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="useAuthorsColumn" type="xboolean" value="true"/>
-<config key="AuthorsCol_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="AuthorsCol" type="xstring" value="user"/>
-<config key="AuthorSplitChar_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="AuthorSplitChar" type="xstring" value=", "/>
-<config key="AuthorFirstName_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="AuthorFirstName" type="xstring" value="-"/>
-<config key="AuthorLastName_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="AuthorLastName" type="xstring" value="-"/>
 <config key="TextCol_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="TextCol" type="xstring" value="clean_text"/>
+<config key="AuthorsCol_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="AuthorsCol" type="xstring" value="user"/>
+<config key="TitleCol_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="false"/>
+</config>
+<entry key="TitleCol" type="xstring" value="post_time"/>
+<config key="AuthorSplitChar_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="AuthorSplitChar" type="xstring" value=", "/>
 <config key="DocumentSource_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="DocumentSource" type="xstring" value=""/>
-<config key="UseSourceColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="UseSourceColumn" type="xboolean" value="false"/>
-<config key="SourceColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="false"/>
-</config>
-<entry key="SourceColumn" type="xstring" value="post_time"/>
 <config key="DocumentCategory_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="DocumentCategory" type="xstring" value=""/>
-<config key="UseCategoryColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="UseCategoryColumn" type="xboolean" value="false"/>
-<config key="CategoryColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
-<entry key="EnabledStatus" type="xboolean" value="false"/>
-</config>
-<entry key="CategoryColumn" type="xstring" value="post_time"/>
 <config key="DocumentType_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -86,21 +46,61 @@
 <entry key="EnabledStatus" type="xboolean" value="false"/>
 </config>
 <entry key="PublicationDate" type="xstring" value="07-08-2017"/>
-<config key="UsePubDateColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="UsePubDateColumn" type="xboolean" value="true"/>
 <config key="PubdateCol_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="PubdateCol" type="xstring" value="post_time"/>
+<config key="UseCategoryColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="UseCategoryColumn" type="xboolean" value="false"/>
+<config key="UseSourceColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="UseSourceColumn" type="xboolean" value="false"/>
+<config key="useTitleColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="useTitleColumn" type="xboolean" value="false"/>
+<config key="useAuthorsColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="useAuthorsColumn" type="xboolean" value="true"/>
+<config key="UsePubDateColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="UsePubDateColumn" type="xboolean" value="true"/>
+<config key="CategoryColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="false"/>
+</config>
+<entry key="CategoryColumn" type="xstring" value="post_time"/>
+<config key="SourceColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="false"/>
+</config>
+<entry key="SourceColumn" type="xstring" value="post_time"/>
 <config key="Number of threads_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_integer"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="Number of threads" type="xint" value="10"/>
+<config key="AuthorFirstName_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="AuthorFirstName" type="xstring" value="-"/>
+<config key="AuthorLastName_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="AuthorLastName" type="xstring" value="-"/>
 <config key="Word Tokenizer_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
