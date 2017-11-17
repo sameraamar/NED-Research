@@ -2,10 +2,13 @@ import numpy as np
 import pandas as pd
 
 import matplotlib.pyplot as plt
-
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.datasets import make_classification
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
+
+
 from sklearn.datasets import make_regression
 
 
@@ -74,15 +77,37 @@ def test3(X, y):
     plt.xlim([-1, X.shape[1]])
     plt.show()
 
-def test4(X, y):
+def randomForest(X_train, X_test, y_train, y_test):
+    print('random forest classifier')
+
     names = X.columns
 
-    rf = RandomForestRegressor()
-    rf.fit(X, y)
+    clf = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy', #'gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_impurity_split=1e-07, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            n_estimators=10, n_jobs=2, oob_score=False, random_state=0,
+            verbose=0, warm_start=False)
+
+    clf.fit(X_train, y_train)
     print ("Features sorted by their score:")
-    print (sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), names), reverse = True))
+    print (sorted(zip(map(lambda x: round(x, 4), clf.feature_importances_), names), reverse = True))
 
+    # View the predicted probabilities of the first 10 observations
+    y_predict = clf.predict_proba(X_test)
+    print(y_predict[0:10])
+    y_predict = clf.predict(X_test)
 
+    pd.crosstab(y_test, y_predict, rownames=['Actual Class'], colnames=['Predicted Class'])
+
+    # View a list of the features and their importance scores
+    v = list(zip(X_train, clf.feature_importances_))
+    print(v)
+
+    acc = accuracy_score(y_test, y_predict)
+    temp = cross_val_score(clf, X_train, y_train)
+    print(temp)
+    print(acc)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 def gini(p):
@@ -233,7 +258,7 @@ def LR_based(X, y):
 def feature_importance(X, y):
     # feature extraction
     print('feature_importance')
-    model = ExtraTreesClassifier()
+    model = ExtraTreesClassifier(criterion='entropy')
     model.fit(X, y)
     print(model.feature_importances_)
 
@@ -241,6 +266,7 @@ if __name__ == "__main__":
     df = pd.read_csv('C:/temp/data-cluster1.csv') #c:/temp/data_minimal_features.csv')
     # X, y = make_regression(n_features=4, n_informative=2, random_state=0, shuffle=False)
 
+    df = df.ix[:, ['entropy', 'unique_users', 'size', 'class']]
     X = df.ix[:, df.columns != 'class']
 
     print(df.columns)
@@ -271,20 +297,7 @@ if __name__ == "__main__":
     tmp1 = yes['entropy']
     tmp1 = no['entropy']
 
-    #cdf(tmp1)
-    #cdf(tmp2)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
 
-    #bayes(df, 'entropy', 10)
-
-    #print(df.head(100))
-    #bayes2(X, y)
-
-    #Univariate(X, y)
-    #PCA_based(X, y)
-    LR_based(X, y)
-
-    #feature_importance(X, y)
-    #test3(X, y)
-    #test4(X, y)
-
-    test1(X, y)
+    y_predict = randomForest(X_train, X_test, y_train, y_test)
+    feature_importance(X, y)

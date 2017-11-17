@@ -1,5 +1,44 @@
 SHOW VARIABLES LIKE 'secure_file_priv';
 
+DROP TABLE IF EXISTS clusters_growth_speed ;
+CREATE TABLE `clusters_growth_speed` (
+  `lead_id` bigint(20) NOT NULL ,
+  `tweet_id` bigint(20) NOT NULL ,
+  `timestamp` int(11) DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `start_time` int(11) DEFAULT NULL,
+  `lead_rank` int DEFAULT NULL,
+  `tweet_rank` int DEFAULT NULL,
+  `growth_group` float DEFAULT NULL,
+  `growth_group_int` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into clusters_growth_speed
+select 
+	c.lead_id,
+    c.tweet_id,
+    c.timestamp,
+    d.timestamp as start_time,
+    c.size,
+    r1.rank as lead_rank,
+    r2.rank as tweet_rank,
+    (r2.rank-r1.rank)/5000.0 as growth_group,
+    floor((r2.rank-r1.rank)/5000.0) as growth_group_int
+from clusters c
+join tweet_id_ranked r2 on c.tweet_id = r2.tweet_id
+join tweet_id_ranked r1 on c.lead_id = r1.tweet_id
+join dataset d on d.tweet_id = c.lead_id;
+
+SELECT 
+cg.lead_id as lead_id, 
+cg.size as size,
+cg.growth_group_int as growth_group_int,
+count(cg.tweet_id) as group_share_count,
+100*count(cg.tweet_id)/5000 group_share_prcnt,
+max(timestamp - start_time) as group_time_delta
+FROM [new-event-detection:petrovic.clusters_growth_speed] as cg
+group by lead_id, size, growth_group_int;
+
 DROP TABLE IF EXISTS thesis_analysis.clusters_features00 ;
 DROP TABLE IF EXISTS thesis_analysis.clusters_features01 ;
 DROP TABLE IF EXISTS thesis_analysis.clusters_features02 ;

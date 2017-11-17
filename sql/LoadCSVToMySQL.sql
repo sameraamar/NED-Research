@@ -284,10 +284,34 @@ CREATE VIEW `thesis_2017`.`tweet2topic_vw` AS
 
 
 
+###########################
+
+
+
+DROP TABLE IF EXISTS `thesis_2017`.`mt_votes`;
+
+CREATE TABLE `thesis_2017`.`mt_votes` (
+idHitResults int PRIMARY KEY,
+idHit int,
+user text  DEFAULT NULL,
+tweet_id bigint(20),
+yesno int
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+LOAD DATA LOCAL INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 5.6\\Uploads\\amt_30_5_17.csv' 
+INTO TABLE `thesis_2017`.`mt_votes`
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(`idHitResults`, `idHit`, `user`, @dummy, `tweet_id`, `yesno`);
+
+
+
 #########################
 
 
-Create table thesis_2017.bonus_users (`user` text, `tweet_id` bigint(20))
+Create table thesis_2017.bonus_users (`user` text, `tweet_id` bigint(20));
 
 
 insert into thesis_2017.bonus_users values ('A2Q8Q1BE2JQR4C', 88612360184541184);
