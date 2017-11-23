@@ -153,6 +153,45 @@ VIEW `thesis_2017`.`id2tree_vw` AS
         (`thesis_2017`.`dataset` `d`
         JOIN `thesis_2017`.`id2tree` `t` ON ((`t`.`tweet_id` = `d`.`tweet_id`)));
 
+#########################################################
+################### Aug - 28 #############################
+
+DROP TABLE IF EXISTS `thesis_2017`.`clusters_aug28`;
+
+CREATE TABLE `thesis_2017`.`clusters_aug28` (
+  `lead_Id` bigint(20) ,
+  `tweet_id` bigint(20)  ,
+  `timestamp` int(11) DEFAULT NULL,
+  `nearest` text,
+  `distance` double DEFAULT NULL,
+  `entropy` double DEFAULT NULL,
+  `users` int(11) DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `score` text,
+  primary key (`lead_Id`, `tweet_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `thesis_2017`.`clusters_aug28` 
+ADD INDEX clusters_aug28_pk_idx (lead_id, tweet_id);
+
+ALTER TABLE `thesis_2017`.`clusters_aug28` 
+ADD INDEX `clusters_aug28_lead_id_idx` (`lead_Id` ASC);
+
+
+ALTER TABLE `thesis_2017`.`clusters_aug28` 
+ADD INDEX `clusters_aug28_tweet_id_idx` (`tweet_Id` ASC);
+
+
+LOAD DATA LOCAL INFILE 'C:\\data\\Thesis\\threads_petrovic_all\\run-Aug-28\\full_000.txt' 
+INTO TABLE `thesis_2017`.`clusters_aug28`
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n' 
+IGNORE 1 LINES
+(`lead_Id`, `tweet_id`, @dummy, `timestamp`, `nearest`, `distance`, `entropy`, `users`, `size`, `age`, `score`, @dummy)
+;
+
+
 ############################################################
 
 DROP TABLE IF EXISTS `thesis_2017`.`clusters`;

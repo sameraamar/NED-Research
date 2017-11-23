@@ -251,8 +251,8 @@ public class EnrichPositiveLabeledDataset {
 			br = new BufferedReader(new FileReader(clustersInput));
 		    String line = br.readLine();
 		    
-		    nout.print("leadId\tid\ttimestamp\tdistance\tentropy\t#users\tsize\tage\ttopic\ttext\n");
-		    yout.print("leadId\tid\ttimestamp\tdistance\tentropy\t#users\tsize\tage\ttopic\ttext\n");
+		    nout.print("leadId\tid\ttimestamp\tdistance\tentropy\tusers\tsize\tage\ttopic\ttext\n");
+		    yout.print("leadId\tid\ttimestamp\tdistance\tentropy\tusers\tsize\tage\ttopic\ttext\n");
 		    //allout.print("topic" + DELIMITER + line + "\n");
 			
 		    int yesEventCount = 0;

@@ -9,35 +9,205 @@ CREATE TABLE `clusters_growth_speed` (
   `start_time` int(11) DEFAULT NULL,
   `lead_rank` int DEFAULT NULL,
   `tweet_rank` int DEFAULT NULL,
-  `growth_group` float DEFAULT NULL,
-  `growth_group_int` int DEFAULT NULL
+  #`group_growth` int DEFAULT NULL,
+  #`group_growth_ratio` float DEFAULT NULL,
+  `group_growth_int` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `thesis_2017`.`clusters_growth_speed` 
+ADD PRIMARY KEY (`lead_id`, `tweet_id`);
 
 insert into clusters_growth_speed
 select 
 	c.lead_id,
     c.tweet_id,
     c.timestamp,
-    d.timestamp as start_time,
     c.size,
+    d.timestamp as start_time,
     r1.rank as lead_rank,
     r2.rank as tweet_rank,
-    (r2.rank-r1.rank)/5000.0 as growth_group,
-    floor((r2.rank-r1.rank)/5000.0) as growth_group_int
+    #(r2.rank-r1.rank+1) AS group_growth,
+    #(r2.rank-r1.rank+1)/5000.0 as group_growth_ratio,
+    floor((r2.rank-r1.rank+1)/5000.0) as group_growth_int
 from clusters c
 join tweet_id_ranked r2 on c.tweet_id = r2.tweet_id
 join tweet_id_ranked r1 on c.lead_id = r1.tweet_id
 join dataset d on d.tweet_id = c.lead_id;
 
+
+DROP TABLE IF EXISTS clusters_growth_speed_grouped ;
+create table clusters_growth_speed_grouped as
 SELECT 
 cg.lead_id as lead_id, 
 cg.size as size,
-cg.growth_group_int as growth_group_int,
+cg.start_time as start_time,
+cg.group_growth_int,
 count(cg.tweet_id) as group_share_count,
 100*count(cg.tweet_id)/5000 group_share_prcnt,
 max(timestamp - start_time) as group_time_delta
-FROM [new-event-detection:petrovic.clusters_growth_speed] as cg
-group by lead_id, size, growth_group_int;
+FROM clusters_growth_speed as cg
+group by cg.lead_id, cg.size, cg.start_time, cg.group_growth_int;
+
+ALTER TABLE `thesis_2017`.`clusters_growth_speed_grouped` 
+ADD PRIMARY KEY (`lead_id`, `group_growth_int`);
+
+DROP TABLE IF EXISTS clusters_growth_speed_grouped_flat ;
+CREATE TABLE `clusters_growth_speed_grouped_flat` (
+  `lead_id` bigint(20) NOT NULL,
+  `size` int(11) DEFAULT NULL,
+  `start_time` int(11) DEFAULT NULL,
+  `count_05k` int(11) DEFAULT NULL,
+  `count_10k` int(11) DEFAULT NULL,
+  `count_15k` int(11) DEFAULT NULL,
+  `count_20k` int(11) DEFAULT NULL,
+  `count_25k` int(11) DEFAULT NULL,
+  `count_30k` int(11) DEFAULT NULL,
+  `count_35k` int(11) DEFAULT NULL,
+  `count_40k` int(11) DEFAULT NULL,
+  `count_45k` int(11) DEFAULT NULL,
+  `count_50k` int(11) DEFAULT NULL,
+  `count_55k` int(11) DEFAULT NULL,
+  `count_60k` int(11) DEFAULT NULL,
+  `count_65k` int(11) DEFAULT NULL,
+  `count_70k` int(11) DEFAULT NULL,
+  `count_75k` int(11) DEFAULT NULL,
+  `count_80k` int(11) DEFAULT NULL,
+  `count_85k` int(11) DEFAULT NULL,
+  `count_90k` int(11) DEFAULT NULL,
+  `count_95k` int(11) DEFAULT NULL,
+  `count_100k` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `thesis_2017`.`clusters_growth_speed_grouped_flat` 
+ADD PRIMARY KEY (`lead_id`);
+
+insert into clusters_growth_speed_grouped_flat 
+select lead_id,	max(size) as size, max(start_time) as start_time,
+sum(if(group_growth_int=0, group_share_count, 0)) as count_05k,
+sum(if(group_growth_int=1, group_share_count, 0)) as count_10k,
+sum(if(group_growth_int=2, group_share_count, 0)) as count_15k,
+sum(if(group_growth_int=3, group_share_count, 0)) as count_20k,
+sum(if(group_growth_int=4, group_share_count, 0)) as count_25k,
+sum(if(group_growth_int=5, group_share_count, 0)) as count_30k,
+sum(if(group_growth_int=6, group_share_count, 0)) as count_35k,
+sum(if(group_growth_int=7, group_share_count, 0)) as count_40k,
+sum(if(group_growth_int=8, group_share_count, 0)) as count_45k,
+sum(if(group_growth_int=9, group_share_count, 0)) as count_50k,
+sum(if(group_growth_int=10, group_share_count, 0)) as count_55k,
+sum(if(group_growth_int=11, group_share_count, 0)) as count_60k,
+sum(if(group_growth_int=12, group_share_count, 0)) as count_65k,
+sum(if(group_growth_int=13, group_share_count, 0)) as count_70k,
+sum(if(group_growth_int=14, group_share_count, 0)) as count_75k,
+sum(if(group_growth_int=15, group_share_count, 0)) as count_80k,
+sum(if(group_growth_int=16, group_share_count, 0)) as count_85k,
+sum(if(group_growth_int=17, group_share_count, 0)) as count_90k,
+sum(if(group_growth_int=18, group_share_count, 0)) as count_95k,
+sum(if(group_growth_int=19, group_share_count, 0)) as count_100k
+from clusters_growth_speed_grouped 
+group by lead_id;
+
+
+DROP TABLE IF EXISTS clusters_growth_speed_grouped_cumm ;
+CREATE TABLE `clusters_growth_speed_grouped_cumm` (
+  `lead_id` bigint(20) NOT NULL,
+  `size` int(11) DEFAULT NULL,
+  `start_time` int(11) DEFAULT NULL,
+  `count_05k` int(11) DEFAULT NULL,
+  `count_10k` int(11) DEFAULT NULL,
+  `count_15k` int(11) DEFAULT NULL,
+  `count_20k` int(11) DEFAULT NULL,
+  `count_25k` int(11) DEFAULT NULL,
+  `count_30k` int(11) DEFAULT NULL,
+  `count_35k` int(11) DEFAULT NULL,
+  `count_40k` int(11) DEFAULT NULL,
+  `count_45k` int(11) DEFAULT NULL,
+  `count_50k` int(11) DEFAULT NULL,
+  `count_55k` int(11) DEFAULT NULL,
+  `count_60k` int(11) DEFAULT NULL,
+  `count_65k` int(11) DEFAULT NULL,
+  `count_70k` int(11) DEFAULT NULL,
+  `count_75k` int(11) DEFAULT NULL,
+  `count_80k` int(11) DEFAULT NULL,
+  `count_85k` int(11) DEFAULT NULL,
+  `count_90k` int(11) DEFAULT NULL,
+  `count_95k` int(11) DEFAULT NULL,
+  `count_100k` int(11) DEFAULT NULL,
+  `p_05k` float DEFAULT NULL,
+  `p_10k` float DEFAULT NULL,
+  `p_15k` float DEFAULT NULL,
+  `p_20k` float DEFAULT NULL,
+  `p_25k` float DEFAULT NULL,
+  `p_30k` float DEFAULT NULL,
+  `p_35k` float DEFAULT NULL,
+  `p_40k` float DEFAULT NULL,
+  `p_45k` float DEFAULT NULL,
+  `p_50k` float DEFAULT NULL,
+  `p_55k` float DEFAULT NULL,
+  `p_60k` float DEFAULT NULL,
+  `p_65k` float DEFAULT NULL,
+  `p_70k` float DEFAULT NULL,
+  `p_75k` float DEFAULT NULL,
+  `p_80k` float DEFAULT NULL,
+  `p_85k` float DEFAULT NULL,
+  `p_90k` float DEFAULT NULL,
+  `p_95k` float DEFAULT NULL,
+  `p_100k` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `thesis_2017`.`clusters_growth_speed_grouped_cumm` 
+ADD PRIMARY KEY (`lead_id`);
+
+insert into clusters_growth_speed_grouped_cumm
+select f.lead_id,
+		f.size,
+        f.start_time,
+		f.count_05k ,
+        count_10k ,
+        count_15k ,
+        count_20k ,
+        count_25k ,
+        count_30k ,
+        count_35k ,
+        count_40k ,
+        count_45k ,
+        count_50k ,
+        count_55k ,
+        count_60k ,
+        count_65k ,
+        count_70k ,
+        count_75k ,
+        count_80k ,
+        count_85k ,
+        count_90k ,
+        count_95k ,
+        count_100k,
+       100 * count_05k / 5000 as p_05k,
+       100 * (count_05k + count_10k) / 10000 as p_10k, 
+       100 * (count_05k + count_10k + count_15k) / 15000 as p_15k, 
+       100 * (count_05k + count_10k + count_15k + count_20k) / 20000 as p_20k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k) / 25000 as p_25k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k) / 30000 as p_30k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k) / 35000 as p_35k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k) / 40000 as p_40k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k) / 45000 as p_45k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k) / 50000 as p_50k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k) / 55000 as p_55k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k) / 60000 as p_60k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k) / 65000 as p_65k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k) / 70000 as p_70k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k + count_75k) / 75000 as p_75k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k + count_75k + count_80k) / 80000 as p_80k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k + count_75k + count_80k + count_85k) / 85000 as p_85k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k + count_75k + count_80k + count_85k + count_90k) / 90000 as p_90k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k + count_75k + count_80k + count_85k + count_90k + count_95k) / 95000 as p_95k, 
+       100 * (count_05k + count_10k + count_15k + count_20k + count_25k + count_30k + count_35k + count_40k + count_45k + count_50k + count_55k + count_60k + count_65k + count_70k + count_75k + count_80k + count_85k + count_90k + count_95k + count_100k) / 100000 as p_100k
+from clusters_growth_speed_grouped_flat f
+#order by lead_id, size
+;
+
+
 
 DROP TABLE IF EXISTS thesis_analysis.clusters_features00 ;
 DROP TABLE IF EXISTS thesis_analysis.clusters_features01 ;
