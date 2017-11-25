@@ -63,6 +63,7 @@ def r_precision(r):
     z = r.nonzero()[0]
     if not z.size:
         return 0.
+
     return np.mean(r[:z[-1] + 1])
 
 
@@ -149,7 +150,7 @@ def mean_average_precision(rs):
     return np.mean([average_precision(r) for r in rs])
 
 
-def dcg_at_k(r, k, method=0):
+def dcg_at_k(r, k, method=2):
     """Score is discounted cumulative gain (dcg)
 
     Relevance is positive real values.  Can use binary
@@ -182,13 +183,14 @@ def dcg_at_k(r, k, method=0):
         Discounted cumulative gain
     """
     r = np.asfarray(r)[:k]
-
-
     if r.size:
         if method == 0:
             return r[0] + np.sum(r[1:] / np.log2(np.arange(2, r.size + 1)))
         elif method == 1:
             return np.sum(r / np.log2(np.arange(2, r.size + 2)))
+        elif method == 2:
+            return np.sum(np.subtract(np.power(2, r), 1) / np.log2(np.arange(2, r.size + 2)))
+
         else:
             raise ValueError('method must be 0 or 1.')
     return 0.
@@ -229,7 +231,6 @@ def ndcg_at_k(r, k, method=0):
     if not dcg_max:
         return 0.
     return dcg_at_k(r, k, method) / dcg_max
-
 
 if __name__ == "__main__":
     import doctest
