@@ -104,7 +104,7 @@ def detectionErrorTradeOff(df, m='DEF', cMiss=1.0, cFA=0.1, plt_ax=None, maxK=No
             stop = True
 
         if stop:
-            #k_range = np.asarray( k_range)[:k-1]
+            #k_range = np.asarray( k_range)[:k-1] #align sizes
             break
 
         kList.append(k)
@@ -168,6 +168,13 @@ def detectionErrorTradeOff(df, m='DEF', cMiss=1.0, cFA=0.1, plt_ax=None, maxK=No
 
     return best_K, best_cDET
 
+
+from sklearn.metrics import precision_recall_curve
+import matplotlib.pyplot as plt
+from sklearn.metrics import average_precision_score
+
+
+
 def precision_recall_f1(df, title):
     modes = ['binary']
 
@@ -218,6 +225,22 @@ def precision_recall_f1(df, title):
             if k % 500 == 0:
                 print ("Mode ({0}) ---> k={1:.3f}: precision={2:.3f}, recall={3:.3f}, F1={4:.3f}, accuracy={5:.3f}, sum(testY)={6}, sum(testY)={7}, sum(predY)={8}".format(m, k, precision, recall, fscore, accuracy, testY.sum(), testY[:k].sum(), predY.sum()))
 
+            #**********************************************************
+            average_precision = average_precision_score(testY, predY)
+
+            print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+
+            precision, recall, _ = precision_recall_curve(testY, predY)
+
+            plt.step(recall, precision, color='b', alpha=0.2, where='post')
+            plt.fill_between(recall, precision, step='post', alpha=0.2, color='b')
+
+            plt.xlabel('Recall')
+            plt.ylabel('Precision')
+            plt.ylim([0.0, 1.05])
+            plt.xlim([0.0, 1.0])
+            plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format( average_precision ))
+
         accuracy = accuracy_score(testY, predY)
         accuracyList.append(accuracy)
 
@@ -266,6 +289,11 @@ def precision_recall_f1(df, title):
         fig.add_axes(ax)
         p.show()
 
+        fig = p.figure()
+        plt.scatter(k_range, accuracyList)
+        plt.plot(x, y, '-.', label="Precision vs. Recall")
+        plt.show()
+
     plt.scatter(k_range, accuracyList)
     plt.plot(k_range, accuracyList, '-.', label="Accuracy")
 
@@ -275,16 +303,21 @@ def precision_recall_f1(df, title):
     plt.scatter(k_range, averagePrecisionList)
     plt.plot(k_range, averagePrecisionList, '--', label="AveragePrecision")
 
-    plt.title("score@k (Accuracy & AUC)")
+    plt.title("score@k (Accuracy & AUC): " + title)
     plt.xlabel("k")
     plt.ylabel("Score ([0,1])")
+
+    print('Best AP: ' , np.max(averagePrecisionList))
+
 
     plt.legend()
 
     plt.show()
 
-
 def sort_data(df, alpha=0.5):
+    #print(np.argmin(df.applymap(np.isreal).all(1)))
+    #temp = np.where(np.any(np.isnan(df.convert_objects(convert_numeric=True)), axis=1))
+
     # normalization
     zscore_normalize(df, 'entropy')
     zscore_normalize(df, 'users')
@@ -348,10 +381,10 @@ def handle_KNIME_results(filename):
     df_sorted = read_data_from_KNIME_results(filename)
     precision_recall_f1(df_sorted, filename)
 
-def process_data(df, title):
+def find_best_alpha_for_AP(df, title):
     # df = df.head(1000)
     #print(df.head())
-    print(df.count() , ' rows')
+    print(len(df) , ' rows')
 
     bestAlpha = None
     bestAP = 0.0
@@ -367,8 +400,7 @@ def process_data(df, title):
 
     print('best alpha between entropy and users: ', bestAlpha, ' best AP: ', bestAP)
 
-    df_sorted = sort_data(df, bestAlpha)
-    precision_recall_f1(df_sorted, '{0} (alpha={1}'.format(title, bestAlpha))
+    return bestAlpha
 
 
 if __name__ == "__main__":
@@ -379,9 +411,9 @@ if __name__ == "__main__":
 
     flag = 6
 
-    path = 'c:/temp/deleteme/'
-    files = ['randomforest.ranking.csv', 'randomforest2.ranking.csv', 'bagging_dtree.ranking.csv',
-             'bagging_dtree2.ranking.csv', 'adaboost2.ranking.csv', 'adaboost.ranking.csv']
+    path = 'C:/temp/deleteme/classification.tweet_based_old_timestamp_calc/'
+    files = ['adaboost.1.SMOTE.csv', 'bagging_R1.1.SMOTE.csv', 'bagging_dtree.1.SMOTE.csv', 'randomforest.1.SMOTE.csv',
+             'adaboost.2.Under-Sampling.csv', 'bagging_R1.2.Under-Sampling.csv', 'bagging_dtree.2.Under-Sampling.csv', 'randomforest.2.Under-Sampling.csv']
 
     print('Working on ', flags[flag])
     if flags[flag] == 'KNIME':
@@ -398,27 +430,54 @@ if __name__ == "__main__":
         process_data(df)
 
     elif flags[flag] == 'Petrovic-F1,MAP,Precision,Recall scores':
+        filename = files[0] #take one of the files and use it as Petrovic does: 1.entropy+user 2.timestamp
+        title = 'Rank by growth'
+        print('.3.....' * 10)
+        fig, ax = plt.subplots(1, 1)
+        df = read_csv(path + filename)
+        bestK, best_cDET = 0, [100000000000]
+        for sortBy in ["p_20k", "p_40k", "p_40k", "p_80k"]:
+            df["rank_score"] = df[sortBy]
+            df_sorted = df.sort_values(['rank_score'], ascending=[False])
+            precision_recall_f1(df_sorted, '{0} (rank by {1})'.format(title, sortBy))
+            #K, cDET = detectionErrorTradeOff(df_sorted, 'sort by={0}'.format(sortBy), cMiss=cMiss, cFA=cFA, plt_ax=ax,
+            #                                 maxK=maxK)
+            #if best_cDET[0] > cDET[0]:
+            #    bestK, best_cDET, best_sortBy = K, cDET, sortBy
+            #print('For sortBy={0}, we get: K={1}, cDET={2:.7f} (norm={3:.7f}'.format(sortBy, K, cDET[0], cDET[1]))
+
+        #print(' ************* best K={0}, best cDET={1:.7f} (norm={4:.7f}, best sortby={2} [{3}]'.format(bestK,
+        #                                                                                                 best_cDET[0],
+        #                                                                                                 best_sortBy,
+        #                                                                                                 title,
+        #                                                                                                 best_cDET[1]))
+        plt.show()
 
         for filename in files:
-            filename = path + filename
             print('Calc scores: ', filename)
 
             # now try the P(class=yes)
             print('.1....' * 10)
-            print('now try p(class=yes)... ', filename)
-            df_sorted = read_data_from_KNIME_results(filename)
+            print('try p(class=yes)... ', filename)
+            df_sorted = read_data_from_KNIME_results(path + filename)
             precision_recall_f1(df_sorted, 'sort by P(class=yes): ' + filename)
 
-            print('.2.....' * 10)
-            print('Rank by entropy+user growing {0}'.format(filename))
-            df = read_csv(filename)
-            process_data(df, 'sort by user+entropy: ' + filename)
+        print('.2.....' * 10)
+        filename = files[0] #take one of the files and use it as Petrovic does: 1.entropy+user 2.timestamp
+        title = 'Rank by entropy+user '
+        print(title)
+        df = read_csv(path + filename)
+
+        bestAlpha = find_best_alpha_for_AP(df, 'find best alpha for AP')
+        df_sorted = sort_data(df, bestAlpha)
+
+        precision_recall_f1(df_sorted, '{0} (alpha={1}'.format(title, bestAlpha))
 
 
     elif flags[flag] == 'Petrovic-DET':
         cMiss = 1.0
-        cFA = 1.0
-        maxK = 100
+        cFA = 0.1
+        maxK = 500
         #alpha_values = np.arange(0.001, 1, 0.1)
         alpha_values = np.linspace(0.001, 1.0, 10)
 
@@ -444,16 +503,40 @@ if __name__ == "__main__":
         # plt.show()
 
         # #########################################
+        # fig, ax = plt.subplots(1, 2)
+        # title = 'Without ranking by timestamp: tweets_topics2.csv'
+        # print('Search cost function for ' + title, end='')
+        # df = pd.read_csv('C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/tweets_topics2.csv' , #tweets_topics3.samer.csv',
+        #                  header=None,
+        #                  names=["tweet_id", "size", "users", "entropy", "rank", "votes", "voters", "class", "timestamp", "created_at", "tweet_text"])
+        # print('.... data loaded successfully: {0} rows'.format(df.shape[0]))
+        # bestK, best_cDET = 0, [100000000000]
+        #
+        # for alpha in alpha_values:
+        #     df_sorted = sort_data(df, alpha)
+        #     K, cDET = detectionErrorTradeOff(df_sorted, 'tweets_topics2.csv: alpha={0:.2f}'.format(alpha), cMiss=cMiss, cFA=cFA, plt_ax=ax, maxK=maxK)
+        #     if best_cDET[0] > cDET[0]:
+        #         bestK, best_cDET, best_alpha = K, cDET, alpha
+        #     print('For alpha={0:.2f}, we get: K={1}\tcDET={2:.7f}\tcDETnorm={3:.7f}'.format(alpha, K, cDET[0], cDET[1]))
+        #
+        # print(' ************* K={0}, best cDET={1:.7f} (norm={2:.7f}), best alpha={3:.4f} [{4}]'.format(bestK, best_cDET[0], best_cDET[1], best_alpha, title))
+        # plt.show()
+
+
+        # #########################################
         fig, ax = plt.subplots(1, 2)
-        title = 'Without ranking by timestamp'
+        title = 'User+Entropy (best alpha): adaboost2.ranking.csv'
         print('Search cost function for ' + title, end='')
-        df = pd.read_csv('C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/tweets_topics2.csv' , #tweets_topics3.samer.csv',
+        df = pd.read_csv('c:/temp/deleteme/classification/randomforest.1.SMOTE.csv' ,
                          header=None,
                          names=["tweet_id", "size", "users", "entropy", "rank", "votes", "voters", "class", "timestamp", "created_at", "tweet_text"])
         print('.... data loaded successfully: {0} rows'.format(df.shape[0]))
         bestK, best_cDET = 0, [100000000000]
 
+        maxK = 100
+
         for alpha in alpha_values:
+            print('alpha = ', alpha)
             df_sorted = sort_data(df, alpha)
             K, cDET = detectionErrorTradeOff(df_sorted, 'alpha={0:.2f}'.format(alpha), cMiss=cMiss, cFA=cFA, plt_ax=ax, maxK=maxK)
             if best_cDET[0] > cDET[0]:
@@ -504,7 +587,7 @@ if __name__ == "__main__":
             plt.show()
 
         # #########################################
-        title = 'Rank by fastest growing'
+        title = 'Rank by fastest growing: tweets_topics2.fast_grow.csv'
         print('Search cost for ' + title, end='')
         df = pd.read_csv('C:/ProgramData/MySQL/MySQL Server 5.6/Uploads/tweets_topics2.fast_grow.csv', #tweets_topics3.samer.csv',
                          header=None,
@@ -589,7 +672,7 @@ if __name__ == "__main__":
                          names=["tweet_id", "size", "users", "entropy", "rank", "votes", "voters", "class", "timestamp", "created_at", "tweet_text"])
         print('.... data loaded successfully: {0} rows'.format(df.shape[0]))
 
-        df = df.head(500)
+        #df = df.head(500)
 
         maxK = df.shape[0] + 1
         kList = np.arange(1, maxK, 10)
